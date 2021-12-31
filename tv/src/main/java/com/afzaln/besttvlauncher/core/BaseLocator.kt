@@ -2,14 +2,14 @@ package com.afzaln.besttvlauncher.core
 
 import kotlin.reflect.KProperty
 
-inline operator fun <reified T : Any> ILocator.getValue(
+inline operator fun <reified T : Any> BaseLocator.getValue(
     thisRef: Any?,
     property: KProperty<*>
 ): T = provide()
 
-inline fun <reified T : Any> ILocator.provide(): T = provide(T::class.java)
+inline fun <reified T : Any> BaseLocator.provide(): T = provide(T::class.java)
 
-interface ILocator {
+interface BaseLocator {
     val locatorMap: MutableMap<Class<*>, Any>
 
     @Suppress("UNCHECKED_CAST")

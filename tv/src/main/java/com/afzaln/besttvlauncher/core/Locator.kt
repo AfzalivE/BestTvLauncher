@@ -6,7 +6,7 @@ import com.afzaln.besttvlauncher.data.AppInfoRepository
 import com.afzaln.besttvlauncher.data.ChannelRepository
 import com.afzaln.besttvlauncher.data.ProgramRepository
 
-object Locator : ILocator {
+object Locator : BaseLocator {
     private lateinit var app: Application
     override val locatorMap: MutableMap<Class<*>, Any> = mutableMapOf()
 
