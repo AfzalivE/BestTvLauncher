@@ -1,0 +1,26 @@
+package com.afzaln.besttvlauncher.core
+
+import android.app.Application
+import com.afzaln.besttvlauncher.BestTvApplication
+import com.afzaln.besttvlauncher.data.AppInfoRepository
+import com.afzaln.besttvlauncher.data.SecondRepository
+
+object Locator : ILocator {
+    private lateinit var app: Application
+    override val locatorMap: MutableMap<Class<*>, Any> = mutableMapOf()
+
+    fun init(app: BestTvApplication) {
+        this.app = app
+    }
+
+    @Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
+    override fun <T : Any> create(clz: Class<T>): T = when (clz) {
+        AppInfoRepository::class.java -> createAppInfoRepository()
+        SecondRepository::class.java -> createSecondRepository()
+        else -> throw IllegalArgumentException("unsupported class: $clz")
+    } as T
+
+    private fun createSecondRepository(): SecondRepository = SecondRepository(app)
+
+    private fun createAppInfoRepository(): AppInfoRepository = AppInfoRepository(app)
+}
