@@ -1,4 +1,4 @@
-package com.afzaln.besttvlauncher.ui.home
+package com.afzaln.besttvlauncher.ui.apps
 
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -46,7 +46,7 @@ import com.afzaln.besttvlauncher.ui.theme.AppTheme
 import com.afzaln.besttvlauncher.utils.locatorViewModel
 
 @Composable
-fun HomeScreen() {
+fun AppsScreen() {
     val viewModel: HomeViewModel = locatorViewModel()
     val appList by viewModel.appInfoList.observeAsState(emptyList())
 
@@ -63,7 +63,7 @@ fun HomeScreen() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AppList(appList: List<AppInfo>) {
-    LazyVerticalGrid(cells = GridCells.Adaptive(120.dp)) {
+    LazyVerticalGrid(cells = GridCells.Fixed(6)) {
         items(appList) { appInfo ->
             AppCard(appInfo)
         }
@@ -94,12 +94,6 @@ fun AppCard(appInfo: AppInfo) {
                 contentDescription = "Icon for ${appInfo.label}"
             )
         }
-        // Text(
-        //     text = "${appInfo.label}",
-        //     style = MaterialTheme.typography.body2,
-        //     modifier = Modifier.padding(top = 4.dp),
-        //     textAlign = TextAlign.Center
-        // )
     }
 }
 

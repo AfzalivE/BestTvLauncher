@@ -54,6 +54,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.leanback:leanback:1.0.0")
     implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation("com.afzaln:android-tvprovider:1.1.0-alpha01")
 
     // Architecture
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
@@ -68,6 +69,7 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:$compose_version")
     implementation("androidx.compose.material3:material3:1.0.0-alpha02")
     implementation("androidx.compose.material:material:$compose_version")
+    implementation("io.coil-kt:coil-compose:1.4.0")
 
     // Debug
     implementation("com.squareup.logcat:logcat:0.1")

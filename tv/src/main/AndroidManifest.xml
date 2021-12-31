@@ -11,6 +11,8 @@
         android:name="android.software.leanback"
         android:required="true" />
 
+    <uses-permission android:name="android.permission.READ_TV_LISTINGS" />
+
     <permission android:name="android.permission.QUERY_ALL_PACKAGES" />
 
     <queries>
