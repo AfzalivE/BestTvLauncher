@@ -15,7 +15,7 @@ import com.afzaln.besttvlauncher.data.ProgramRepository
 class HomeViewModel(
     appInfoRepo: AppInfoRepository,
     channelRepository: ChannelRepository,
-    val programRepository: ProgramRepository
+    private val programRepository: ProgramRepository
 ) : ViewModel() {
 
     val appInfoList = liveData {

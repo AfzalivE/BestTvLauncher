@@ -9,7 +9,6 @@ import androidx.tvprovider.media.tv.PreviewProgram
 import androidx.tvprovider.media.tv.PreviewProgramHelper
 
 class ProgramRepository(context: Context) {
-    private val packageManager: PackageManager = context.packageManager
     private val previewProgramHelper: PreviewProgramHelper = PreviewProgramHelper(context)
 
     fun getProgramsForChannel(channelId: Long): List<PreviewProgram> {
