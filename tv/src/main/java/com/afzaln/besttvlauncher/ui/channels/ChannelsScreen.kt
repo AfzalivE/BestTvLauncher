@@ -3,7 +3,9 @@ package com.afzaln.besttvlauncher.ui.channels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.GridCells
@@ -11,6 +13,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
@@ -52,8 +56,8 @@ fun ChannelsScreen() {
 @Composable
 fun ChannelList(programMap: Map<PreviewChannel, List<PreviewProgram>>) {
     val channels = programMap.keys.toList()
-    LazyColumn {
-        items(channels) { channel ->
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+        channels.forEach { channel ->
             ChannelRow(channel, programMap[channel] ?: emptyList())
         }
     }
@@ -70,8 +74,8 @@ fun ChannelRow(channel: PreviewChannel, programs: List<PreviewProgram>) {
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onBackground
         )
-        LazyRow {
-            items(programs) { program ->
+        Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+            programs.forEach { program ->
                 Column {
                     Card(shape = AppTheme.cardShape,
                         modifier = Modifier.clickable {
@@ -88,7 +92,7 @@ fun ChannelRow(channel: PreviewChannel, programs: List<PreviewProgram>) {
                         )
                     }
                     Text(
-                        text = program.title,
+                        text = program.title ?: "empty",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onBackground
                     )
