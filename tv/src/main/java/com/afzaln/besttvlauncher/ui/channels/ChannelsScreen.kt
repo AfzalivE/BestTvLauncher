@@ -62,6 +62,7 @@ fun ChannelList(programMap: Map<PreviewChannel, List<PreviewProgram>>) {
 @Composable
 fun ChannelRow(channel: PreviewChannel, programs: List<PreviewProgram>) {
     if (programs.isEmpty()) return
+    val context = LocalContext.current
 
     Column {
         Text(
@@ -72,7 +73,14 @@ fun ChannelRow(channel: PreviewChannel, programs: List<PreviewProgram>) {
         LazyRow {
             items(programs) { program ->
                 Column {
-                    Card(shape = AppTheme.cardShape) {
+                    Card(shape = AppTheme.cardShape,
+                        modifier = Modifier.clickable {
+                            val intent = program.intent
+                            if (intent != null) {
+                                context.startActivity(intent)
+                            }
+                        }
+                    ) {
                         Image(
                             painter = rememberImagePainter(data = program.thumbnailUri),
                             contentDescription = "Thumbnail for for ${program.title}",
