@@ -1,9 +1,15 @@
 package com.afzaln.besttvlauncher.data
 
-import android.graphics.drawable.Drawable
+import android.content.Context
+import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
 
 data class AppInfo(
     val label: CharSequence,
-    val packageName: CharSequence,
-    val banner: Drawable
+    val packageName: String,
+    val banner: BitmapDrawable
 )
+
+fun AppInfo.getLaunchIntent(context: Context): Intent? {
+    return context.packageManager.getLeanbackLaunchIntentForPackage(packageName)
+}
