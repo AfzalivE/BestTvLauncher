@@ -1,5 +1,6 @@
 package com.afzaln.besttvlauncher.ui.apps
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -25,7 +26,15 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,23 +56,49 @@ import androidx.compose.ui.unit.dp
 import com.afzaln.besttvlauncher.R
 import com.afzaln.besttvlauncher.data.AppInfo
 import com.afzaln.besttvlauncher.data.getLaunchIntent
+import com.afzaln.besttvlauncher.ui.settings.SettingsActivity
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 import com.afzaln.besttvlauncher.utils.locatorViewModel
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppsScreen() {
     val viewModel: HomeViewModel = locatorViewModel()
     val appList by viewModel.appInfoList.observeAsState(emptyList())
 
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 48.dp)
-            .padding(top = 27.dp, bottom = 27.dp)
+    Scaffold(
+        topBar = {
+            SmallTopAppBar(
+                title = { TitleBar() },
+                actions = {
+                    val context = LocalContext.current
+                    IconButton(onClick = {
+                        context.startActivity(SettingsActivity.createIntent(context))
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = stringResource(
+                                id = R.string.settings_title
+                            )
+                        )
+                    }
+                }
+            )
+        }
     ) {
-        TitleBar()
-        AppList(appList)
+        Column {
+            AppList(appList)
+        }
     }
+    // Column(
+    //     modifier = Modifier
+    //         .padding(horizontal = 48.dp)
+    //         .padding(top = 27.dp, bottom = 27.dp)
+    // ) {
+    //     TitleBar()
+    //     AppList(appList)
+    // }
 }
 
 @OptIn(ExperimentalFoundationApi::class)

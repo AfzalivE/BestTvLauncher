@@ -1,5 +1,7 @@
 package com.afzaln.besttvlauncher.ui.settings
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 
@@ -15,5 +17,9 @@ class SettingsActivity: FragmentActivity() {
                 SettingsContainerFragment()
             ).commit()
         }
+    }
+
+    companion object {
+        fun createIntent(context: Context) = Intent(context, SettingsActivity::class.java)
     }
 }

@@ -18,4 +18,5 @@
     <string name="pref_key_providers">pref_providers</string>
     <string name="pref_summary_providers">Select providers to show recommendations from</string>
     <string name="pref_title_providers">Providers</string>
+    <string name="settings_title">Settings</string>
 </resources>
