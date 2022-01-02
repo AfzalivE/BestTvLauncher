@@ -1,5 +1,6 @@
 package com.afzaln.besttvlauncher.ui.channels
 
+import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -7,12 +8,6 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
@@ -25,13 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.tvprovider.media.tv.PreviewChannel
 import androidx.tvprovider.media.tv.PreviewProgram
-import coil.compose.rememberImagePainter
-import com.afzaln.besttvlauncher.ui.apps.AppsTitle
+import com.afzaln.besttvlauncher.ui.apps.TitleBar
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.ui.apps.dpadFocusable
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
@@ -42,12 +36,17 @@ fun ChannelsScreen() {
     val viewModel: HomeViewModel = locatorViewModel()
     val programList by viewModel.programsByChannel.observeAsState(emptyMap())
 
+    ChannelsScreenContent(programList)
+}
+
+@Composable
+private fun ChannelsScreenContent(programList: Map<PreviewChannel, List<PreviewProgram>>) {
     Column(
         modifier = Modifier
             .padding(horizontal = 48.dp)
             .padding(top = 27.dp, bottom = 27.dp)
     ) {
-        AppsTitle()
+        TitleBar()
         ChannelList(programList)
     }
 }
@@ -134,4 +133,10 @@ fun ChannelCard(channel: PreviewChannel) {
             textAlign = TextAlign.Center
         )
     }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_TYPE_TELEVISION)
+@Composable
+fun PreviewChannel() {
+    ChannelsScreenContent(emptyMap())
 }

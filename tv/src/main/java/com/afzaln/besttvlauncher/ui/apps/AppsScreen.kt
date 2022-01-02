@@ -1,5 +1,6 @@
 package com.afzaln.besttvlauncher.ui.apps
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import androidx.compose.animation.animateColor
@@ -16,7 +17,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -34,7 +37,9 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -44,6 +49,7 @@ import com.afzaln.besttvlauncher.data.AppInfo
 import com.afzaln.besttvlauncher.data.getLaunchIntent
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 import com.afzaln.besttvlauncher.utils.locatorViewModel
+import kotlin.math.roundToInt
 
 @Composable
 fun AppsScreen() {
@@ -55,7 +61,7 @@ fun AppsScreen() {
             .padding(horizontal = 48.dp)
             .padding(top = 27.dp, bottom = 27.dp)
     ) {
-        AppsTitle()
+        TitleBar()
         AppList(appList)
     }
 }
@@ -91,6 +97,8 @@ fun AppCard(appInfo: AppInfo) {
         Card(shape = AppTheme.cardShape) {
             Image(
                 bitmap = appInfo.banner.bitmap.asImageBitmap(),
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier.fillMaxSize(),
                 contentDescription = "Icon for ${appInfo.label}"
             )
         }
@@ -98,7 +106,7 @@ fun AppCard(appInfo: AppInfo) {
 }
 
 @Composable
-fun AppsTitle() {
+fun TitleBar() {
     Text(text = stringResource(id = R.string.your_apps))
 }
 
@@ -106,7 +114,7 @@ fun AppsTitle() {
 @Composable
 fun DefaultPreview() {
     AppTheme {
-        AppsTitle()
+        TitleBar()
     }
 }
 
