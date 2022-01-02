@@ -10,7 +10,16 @@ import androidx.tvprovider.media.tv.PreviewProgramHelper
 
 class ChannelRepository(context: Context) {
     private val previewChannelHelper: PreviewChannelHelper = PreviewChannelHelper(context)
+    private val packageManager: PackageManager = context.packageManager
 
-    val channels: List<PreviewChannel>
-        get() = previewChannelHelper.allChannels
+    val channels: List<PreviewChannelWrapper>
+        get() {
+            return previewChannelHelper.allChannels.map { previewChannel ->
+                val appInfo = packageManager.getApplicationInfo(previewChannel.packageName, 0)
+                PreviewChannelWrapper(
+                    previewChannel,
+                    appInfo.loadLabel(packageManager).toString()
+                )
+            }
+        }
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Settings">
+
+        <MultiSelectListPreference
+            android:dialogTitle="@string/pref_title_providers"
+            android:key="@string/pref_key_providers"
+            android:summary="@string/pref_summary_providers"
+            android:title="@string/pref_title_providers" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

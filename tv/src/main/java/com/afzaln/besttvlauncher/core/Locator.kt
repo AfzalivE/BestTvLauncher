@@ -5,6 +5,7 @@ import com.afzaln.besttvlauncher.BestTvApplication
 import com.afzaln.besttvlauncher.data.AppInfoRepository
 import com.afzaln.besttvlauncher.data.ChannelRepository
 import com.afzaln.besttvlauncher.data.ProgramRepository
+import com.afzaln.besttvlauncher.data.UserPreferences
 
 object Locator : BaseLocator {
     private lateinit var app: Application
@@ -19,10 +20,12 @@ object Locator : BaseLocator {
         AppInfoRepository::class.java -> createAppInfoRepository()
         ChannelRepository::class.java -> createChannelRepository()
         ProgramRepository::class.java -> createProgramRepository()
+        UserPreferences::class.java -> createUserPreferences()
         else -> throw IllegalArgumentException("unsupported class: $clz")
     } as T
 
     private fun createChannelRepository(): ChannelRepository = ChannelRepository(app)
     private fun createProgramRepository(): ProgramRepository = ProgramRepository(app)
     private fun createAppInfoRepository(): AppInfoRepository = AppInfoRepository(app)
+    private fun createUserPreferences(): UserPreferences = UserPreferences(app)
 }

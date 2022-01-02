@@ -13,4 +13,9 @@
     <string name="error_fragment_message">An error occurred</string>
     <string name="dismiss_error">Dismiss</string>
     <string name="your_apps">Your apps</string>
+
+    <!-- Channel/Provider preferences -->
+    <string name="pref_key_providers">pref_providers</string>
+    <string name="pref_summary_providers">Select providers to show recommendations from</string>
+    <string name="pref_title_providers">Providers</string>
 </resources>

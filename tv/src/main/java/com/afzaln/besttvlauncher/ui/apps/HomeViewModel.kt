@@ -1,8 +1,6 @@
 package com.afzaln.besttvlauncher.ui.apps
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
@@ -22,14 +20,16 @@ class HomeViewModel(
         emit(appInfoRepo.apps)
     }
 
-    val channelList = liveData {
+    val wrappedChannelList = liveData {
         emit(channelRepository.channels)
     }
 
     val programsByChannel: LiveData<Map<PreviewChannel, List<PreviewProgram>>>
-        get() = Transformations.map(channelList) { listOfChannels ->
-            listOfChannels.associateWith {
+        get() = Transformations.map(wrappedChannelList) { listOfChannels ->
+            val map = listOfChannels.map { it.channel }.associateWith {
                 programRepository.getProgramsForChannel(it.id)
             }
+
+            return@map map
         }
 }
