@@ -17,7 +17,7 @@ fun BestTvApp() {
                 .fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            ChannelsScreen()
+            AppsScreen()
         }
     }
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
@@ -25,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.tvprovider.media.tv.PreviewChannel
 import androidx.tvprovider.media.tv.PreviewProgram
+import coil.compose.rememberImagePainter
 import com.afzaln.besttvlauncher.ui.apps.TitleBar
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.ui.apps.dpadFocusable
@@ -102,14 +104,15 @@ fun ChannelRow(channel: PreviewChannel, programs: List<PreviewProgram>) {
 }
 
 @Composable
-fun ChannelCard(channel: PreviewChannel) {
+fun ChannelCard(channel: PreviewChannel, onFocus: () -> Unit) {
     val context = LocalContext.current
 
     Column(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 16.dp)
             .dpadFocusable(
-                unfocusedBorderColor = MaterialTheme.colorScheme.background
+                unfocusedBorderColor = MaterialTheme.colorScheme.background,
+                onFocus = onFocus
             )
             .clickable {
                 val intent = channel.appLinkIntent

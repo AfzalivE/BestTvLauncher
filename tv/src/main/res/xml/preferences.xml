@@ -3,10 +3,10 @@
     <PreferenceCategory android:title="@string/settings_title">
 
         <MultiSelectListPreference
-            android:dialogTitle="@string/pref_title_providers"
-            android:key="@string/pref_key_providers"
-            android:summary="@string/pref_summary_providers"
-            android:title="@string/pref_title_providers" />
+            android:dialogTitle="@string/pref_title_channels"
+            android:key="@string/pref_key_channels"
+            android:summary="@string/pref_summary_channels"
+            android:title="@string/pref_title_channels" />
 
     </PreferenceCategory>
 </PreferenceScreen>

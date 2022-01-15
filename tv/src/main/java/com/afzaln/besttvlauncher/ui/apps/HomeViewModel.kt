@@ -9,11 +9,13 @@ import androidx.tvprovider.media.tv.PreviewProgram
 import com.afzaln.besttvlauncher.data.AppInfoRepository
 import com.afzaln.besttvlauncher.data.ChannelRepository
 import com.afzaln.besttvlauncher.data.ProgramRepository
+import com.afzaln.besttvlauncher.data.UserPreferences
 
 class HomeViewModel(
     appInfoRepo: AppInfoRepository,
     channelRepository: ChannelRepository,
-    private val programRepository: ProgramRepository
+    private val programRepository: ProgramRepository,
+    private val userPreferences: UserPreferences
 ) : ViewModel() {
 
     val appInfoList = liveData {
@@ -32,4 +34,6 @@ class HomeViewModel(
 
             return@map map
         }
+
+    val selectedChannels = userPreferences.enabledChannels
 }

@@ -10,17 +10,16 @@ class UserPreferences(app: Application) {
     private val preferences: SharedPreferences =
         app.getSharedPreferences(USER_PREF_FILE_NAME, Context.MODE_PRIVATE)
 
-    var enabledProviders: List<Long>
-        get() = preferences.getStringSet(KEY_PROVIDERS, emptySet())!!.map { it.toLong() }
+    var enabledChannels: Set<String>
+        get() = preferences.getStringSet(KEY_CHANNELS, emptySet())!!.toSet()
         set(value) {
             preferences.edit {
-                val stringSet = value.map { it.toString() }.toSet()
-                putStringSet(KEY_PROVIDERS, stringSet)
+                putStringSet(KEY_CHANNELS, value)
             }
         }
 
     companion object {
         const val USER_PREF_FILE_NAME = "user_preferences"
-        const val KEY_PROVIDERS = "pref_providers"
+        const val KEY_CHANNELS = "pref_channels"
     }
 }

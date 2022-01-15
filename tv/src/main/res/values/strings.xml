@@ -14,9 +14,11 @@
     <string name="dismiss_error">Dismiss</string>
     <string name="your_apps">Your apps</string>
 
-    <!-- Channel/Provider preferences -->
-    <string name="pref_key_providers">pref_providers</string>
-    <string name="pref_summary_providers">Select providers to show recommendations from</string>
-    <string name="pref_title_providers">Providers</string>
+    <!-- Settings -->
     <string name="settings_title">Settings</string>
+
+    <!-- Channel/Provider preferences -->
+    <string name="pref_key_channels">pref_channels</string>
+    <string name="pref_summary_channels">Select providers to show recommendations from</string>
+    <string name="pref_title_channels">Channels</string>
 </resources>

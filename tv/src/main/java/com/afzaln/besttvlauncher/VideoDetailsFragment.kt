@@ -62,14 +62,14 @@ class VideoDetailsFragment : DetailsSupportFragment() {
             initializeBackground(mSelectedMovie)
             onItemViewClickedListener = ItemViewClickedListener()
         } else {
-            val intent = Intent(context!!, MainActivityOld::class.java)
+            val intent = Intent(requireContext(), HomeActivity::class.java)
             startActivity(intent)
         }
     }
 
     private fun initializeBackground(movie: Movie?) {
         mDetailsBackground.enableParallax()
-        Glide.with(context!!)
+        Glide.with(requireContext())
             .asBitmap()
             .centerCrop()
             .error(R.drawable.default_background)
@@ -88,10 +88,10 @@ class VideoDetailsFragment : DetailsSupportFragment() {
     private fun setupDetailsOverviewRow() {
         Log.d(TAG, "doInBackground: " + mSelectedMovie?.toString())
         val row = DetailsOverviewRow(mSelectedMovie)
-        row.imageDrawable = ContextCompat.getDrawable(context!!, R.drawable.default_background)
-        val width = convertDpToPixel(context!!, DETAIL_THUMB_WIDTH)
-        val height = convertDpToPixel(context!!, DETAIL_THUMB_HEIGHT)
-        Glide.with(context!!)
+        row.imageDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.default_background)
+        val width = convertDpToPixel(requireContext(), DETAIL_THUMB_WIDTH)
+        val height = convertDpToPixel(requireContext(), DETAIL_THUMB_HEIGHT)
+        Glide.with(requireContext())
             .load(mSelectedMovie?.cardImageUrl)
             .centerCrop()
             .error(R.drawable.default_background)
@@ -138,7 +138,7 @@ class VideoDetailsFragment : DetailsSupportFragment() {
         // Set detail background.
         val detailsPresenter = FullWidthDetailsOverviewRowPresenter(DetailsDescriptionPresenter())
         detailsPresenter.backgroundColor =
-            ContextCompat.getColor(context!!, R.color.selected_background)
+            ContextCompat.getColor(requireContext(), R.color.selected_background)
 
         // Hook up transition element.
         val sharedElementHelper = FullWidthDetailsOverviewSharedElementHelper()
@@ -154,7 +154,7 @@ class VideoDetailsFragment : DetailsSupportFragment() {
                 // intent.putExtra(DetailsActivity.MOVIE, mSelectedMovie)
                 // startActivity(intent)
             } else {
-                Toast.makeText(context!!, action.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), action.toString(), Toast.LENGTH_SHORT).show()
             }
         }
         mPresenterSelector.addClassPresenter(DetailsOverviewRow::class.java, detailsPresenter)

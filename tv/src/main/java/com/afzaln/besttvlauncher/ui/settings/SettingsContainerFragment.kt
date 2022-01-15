@@ -11,7 +11,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
 import androidx.preference.iterator
 import com.afzaln.besttvlauncher.R
-import com.afzaln.besttvlauncher.data.UserPreferences.Companion.KEY_PROVIDERS
+import com.afzaln.besttvlauncher.data.UserPreferences.Companion.KEY_CHANNELS
 import com.afzaln.besttvlauncher.data.UserPreferences.Companion.USER_PREF_FILE_NAME
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.utils.locatorViewModel
@@ -71,7 +71,7 @@ class SettingsFragment : LeanbackPreferenceFragmentCompat() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         homeViewModel.wrappedChannelList.observe(viewLifecycleOwner) { channelList ->
-            preferenceScreen.findPreference<MultiSelectListPreference>(KEY_PROVIDERS)
+            preferenceScreen.findPreference<MultiSelectListPreference>(KEY_CHANNELS)
                 ?.let { preference ->
                     val entry = channelList.associate {
                         val displayName = it.channel.displayName.toString()
@@ -84,32 +84,39 @@ class SettingsFragment : LeanbackPreferenceFragmentCompat() {
                         it.channel.id.toString() to entry
                     }
 
-                    setupProviders(
+                    setupChannels(
                         preference,
                         entry.values.toTypedArray(),
-                        entry.keys.toTypedArray()
+                        entry.keys.toTypedArray(),
+                        homeViewModel.selectedChannels,
+                        true
                     )
                 }
         }
 
-        setupItems()
+        // setupItems()
     }
 
     private fun setupItems() {
         preferenceScreen.iterator().forEach { preference ->
             when (preference.key) {
-                KEY_PROVIDERS -> setupProviders(preference)
+                KEY_CHANNELS -> setupChannels(preference)
             }
         }
     }
 
-    private fun setupProviders(
+    private fun setupChannels(
         preference: Preference,
         entries: Array<String> = emptyArray(),
-        entryValues: Array<String> = emptyArray()
+        entryValues: Array<String> = emptyArray(),
+        selected: Set<String> = emptySet(),
+        updateSelected: Boolean = false
     ) {
         preference as MultiSelectListPreference
         preference.entries = entries
         preference.entryValues = entryValues
+        if (updateSelected) {
+            preference.values = selected
+        }
     }
 }
