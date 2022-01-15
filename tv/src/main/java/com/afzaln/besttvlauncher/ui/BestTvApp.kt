@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.afzaln.besttvlauncher.ui.apps.AppsScreen
 import com.afzaln.besttvlauncher.ui.channels.ChannelsScreen
+import com.afzaln.besttvlauncher.ui.home.HomeScaffold
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 
 @Composable
@@ -17,7 +18,10 @@ fun BestTvApp() {
                 .fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            AppsScreen()
+            HomeScaffold {
+//                AppsScreen()
+                ChannelsScreen()
+            }
         }
     }
 }

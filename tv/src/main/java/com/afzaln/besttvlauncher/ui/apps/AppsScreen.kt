@@ -85,45 +85,9 @@ import logcat.logcat
 fun AppsScreen() {
     val viewModel: HomeViewModel = locatorViewModel()
     val appList by viewModel.appInfoList.observeAsState(emptyList())
-    val focusRequester = remember { FocusRequester() }
 
-    Scaffold(
-        topBar = {
-            SmallTopAppBar(
-                title = { TitleBar() },
-                actions = {
-                    val context = LocalContext.current
-                    IconButton(
-                        modifier = Modifier.focusRequester(focusRequester),
-                        onClick = {
-                            context.startActivity(SettingsActivity.createIntent(context))
-                        }) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(
-                                id = R.string.settings_title
-                            )
-                        )
-                    }
-                }
-            )
-        }
-    ) {
-        Column {
-            AppList(appList)
-        }
-    }
-    // Column(
-    //     modifier = Modifier
-    //         .padding(horizontal = 48.dp)
-    //         .padding(top = 27.dp, bottom = 27.dp)
-    // ) {
-    //     TitleBar()
-    //     AppList(appList)
-    // }
-
-    SideEffect {
-        // focusRequester.requestFocus()
+    Column {
+        AppList(appList)
     }
 }
 
@@ -206,19 +170,6 @@ fun AppCard(
                 contentDescription = "Icon for ${appInfo.label}"
             )
         }
-    }
-}
-
-@Composable
-fun TitleBar() {
-    Text(text = stringResource(id = R.string.your_apps))
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    AppTheme {
-        TitleBar()
     }
 }
 
