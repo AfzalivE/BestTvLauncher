@@ -1,16 +1,8 @@
 package com.afzaln.besttvlauncher.ui.channels
 
 import android.content.res.Configuration
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
@@ -19,15 +11,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.tvprovider.media.tv.PreviewChannel
 import androidx.tvprovider.media.tv.PreviewProgram
 import coil.compose.rememberImagePainter
-import com.afzaln.besttvlauncher.ui.apps.TitleBar
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.ui.apps.dpadFocusable
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
@@ -48,7 +38,6 @@ private fun ChannelsScreenContent(programList: Map<PreviewChannel, List<PreviewP
             .padding(horizontal = 48.dp)
             .padding(top = 27.dp, bottom = 27.dp)
     ) {
-        TitleBar()
         ChannelList(programList)
     }
 }
@@ -77,63 +66,51 @@ fun ChannelRow(channel: PreviewChannel, programs: List<PreviewProgram>) {
         )
         Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
             programs.forEach { program ->
-                Column {
-                    Card(shape = AppTheme.cardShape,
-                        modifier = Modifier.clickable {
-                            val intent = program.intent
-                            if (intent != null) {
-                                context.startActivity(intent)
-                            }
-                        }
-                    ) {
-                        Image(
-                            painter = rememberImagePainter(data = program.thumbnailUri),
-                            contentDescription = "Thumbnail for for ${program.title}",
-                            modifier = Modifier.size(128.dp)
-                        )
-                    }
-                    Text(
-                        text = program.title ?: "empty",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                }
+                ProgramCard(program, onFocus = {})
             }
         }
     }
 }
 
 @Composable
-fun ChannelCard(channel: PreviewChannel, onFocus: () -> Unit) {
+private fun ProgramCard(
+    program: PreviewProgram,
+    onFocus: () -> Unit
+) {
     val context = LocalContext.current
 
     Column(
         modifier = Modifier
-            .padding(horizontal = 8.dp, vertical = 16.dp)
-            .dpadFocusable(
-                unfocusedBorderColor = MaterialTheme.colorScheme.background,
-                onFocus = onFocus
-            )
-            .clickable {
-                val intent = channel.appLinkIntent
-                if (intent != null) {
-                    context.startActivity(intent)
-                }
-            },
+            .padding(horizontal = 8.dp, vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Card(shape = AppTheme.cardShape) {
+        Card(
+            shape = AppTheme.cardShape,
+            modifier = Modifier
+                .requiredHeight(120.dp)
+                .requiredWidth(160.dp)
+                .dpadFocusable(
+                    unfocusedBorderColor = MaterialTheme.colorScheme.background,
+                    onFocus = onFocus
+                )
+                .clickable {
+                    val intent = program.intent
+                    if (intent != null) {
+                        context.startActivity(intent)
+                    }
+                }
+        ) {
             Image(
-                bitmap = channel.getLogo(context).asImageBitmap(),
-                contentDescription = "Image for ${channel.displayName}"
+                painter = rememberImagePainter(data = program.thumbnailUri),
+                contentDescription = "Thumbnail for for ${program.title}",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.fillMaxSize()
             )
         }
         Text(
-            color = MaterialTheme.colorScheme.onBackground,
-            text = "${channel.displayName}",
+            text = program.title?.take(20) ?: "empty",
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(top = 4.dp),
-            textAlign = TextAlign.Center
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }
