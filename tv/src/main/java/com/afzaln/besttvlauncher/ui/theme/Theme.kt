@@ -23,7 +23,7 @@ private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
     tertiary = Pink80,
-    background = Neutral10,
+    background = Neutral10
 )
 
 val LocalCardShape = staticCompositionLocalOf<Shape> { RoundedCornerShape(8.dp) }

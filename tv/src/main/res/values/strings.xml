@@ -12,6 +12,7 @@
     <!-- Error messages -->
     <string name="error_fragment_message">An error occurred</string>
     <string name="dismiss_error">Dismiss</string>
+    <string name="channels">Channels</string>
     <string name="your_apps">Your apps</string>
 
     <!-- Settings -->

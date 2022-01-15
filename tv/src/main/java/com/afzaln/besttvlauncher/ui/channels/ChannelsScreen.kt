@@ -56,7 +56,6 @@ fun ChannelList(programMap: Map<PreviewChannel, List<PreviewProgram>>) {
 @Composable
 fun ChannelRow(channel: PreviewChannel, programs: List<PreviewProgram>) {
     if (programs.isEmpty()) return
-    val context = LocalContext.current
 
     Column {
         Text(
