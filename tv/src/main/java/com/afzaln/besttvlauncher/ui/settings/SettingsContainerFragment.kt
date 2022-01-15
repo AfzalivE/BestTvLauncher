@@ -4,17 +4,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.leanback.preference.LeanbackPreferenceFragmentCompat
 import androidx.leanback.preference.LeanbackSettingsFragmentCompat
-import androidx.preference.MultiSelectListPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceDialogFragmentCompat
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceScreen
-import androidx.preference.iterator
+import androidx.preference.*
 import com.afzaln.besttvlauncher.R
+import com.afzaln.besttvlauncher.data.PreviewChannelWrapper
 import com.afzaln.besttvlauncher.data.UserPreferences.Companion.KEY_CHANNELS
 import com.afzaln.besttvlauncher.data.UserPreferences.Companion.USER_PREF_FILE_NAME
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.utils.locatorViewModel
+import logcat.logcat
 
 class SettingsContainerFragment : LeanbackSettingsFragmentCompat() {
     override fun onPreferenceStartFragment(
@@ -71,52 +68,43 @@ class SettingsFragment : LeanbackPreferenceFragmentCompat() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         homeViewModel.wrappedChannelList.observe(viewLifecycleOwner) { channelList ->
-            preferenceScreen.findPreference<MultiSelectListPreference>(KEY_CHANNELS)
-                ?.let { preference ->
-                    val entry = channelList.associate {
-                        val displayName = it.channel.displayName.toString()
-                        val entry = if (displayName != it.appName) {
-                            "${it.appName} - $displayName"
-                        } else {
-                            displayName
-                        }
-
-                        it.channel.id.toString() to entry
-                    }
-
-                    setupChannels(
-                        preference,
-                        entry.values.toTypedArray(),
-                        entry.keys.toTypedArray(),
-                        homeViewModel.selectedChannels,
-                        true
-                    )
-                }
+            findPreference<MultiSelectListPreference>(KEY_CHANNELS)?.let {
+                setupChannels(it, channelList)
+            }
         }
 
-        // setupItems()
+//         setupItems()
     }
 
     private fun setupItems() {
         preferenceScreen.iterator().forEach { preference ->
             when (preference.key) {
-                KEY_CHANNELS -> setupChannels(preference)
+//                KEY_CHANNELS -> setupChannels(preference)
             }
         }
     }
 
     private fun setupChannels(
-        preference: Preference,
-        entries: Array<String> = emptyArray(),
-        entryValues: Array<String> = emptyArray(),
-        selected: Set<String> = emptySet(),
-        updateSelected: Boolean = false
+        preference: MultiSelectListPreference,
+        channelList: List<PreviewChannelWrapper>,
     ) {
-        preference as MultiSelectListPreference
+        val entry = channelList.associate {
+            val displayName = it.channel.displayName.toString()
+            val entry = if (displayName != it.appName) {
+                "${it.appName} - $displayName"
+            } else {
+                displayName
+            }
+
+            it.channel.id.toString() to entry
+        }
+
+        val entries = entry.values.toTypedArray()
+        val entryValues = entry.keys.toTypedArray()
+        val selected = homeViewModel.selectedChannels
+
         preference.entries = entries
         preference.entryValues = entryValues
-        if (updateSelected) {
-            preference.values = selected
-        }
+        preference.values = selected
     }
 }

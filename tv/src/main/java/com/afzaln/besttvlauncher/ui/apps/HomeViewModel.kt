@@ -35,5 +35,6 @@ class HomeViewModel(
             return@map map
         }
 
-    val selectedChannels = userPreferences.enabledChannels
+    val selectedChannels: Set<String>
+        get() = userPreferences.enabledChannels
 }
