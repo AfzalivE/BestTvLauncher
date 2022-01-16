@@ -1,18 +1,21 @@
 package com.afzaln.besttvlauncher.ui.home
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animate
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
@@ -45,7 +48,7 @@ fun HomeScaffold(
                         selectedTabIndex = pagerState.currentPage,
                         onTabSelected = {
                             coroutineScope.launch {
-                                pagerState.animateScrollToPage(it)
+                                pagerState.scrollToPage(it)
                             }
                         }
                     )
@@ -100,34 +103,63 @@ fun TitleBar(
         backgroundColor = MaterialTheme.colorScheme.surface
     ) {
         tabList.forEachIndexed { index, tabTitle ->
-            val backgroundColor = if (selectedTabIndex == index) {
-                MaterialTheme.colorScheme.inverseSurface
-            } else {
-                MaterialTheme.colorScheme.surface
-            }
-
-            val textColor = if (selectedTabIndex == index) {
-                MaterialTheme.colorScheme.surface
-            } else {
-                MaterialTheme.colorScheme.onSurface
-            }
-
-            Tab(selected = selectedTabIndex == index,
-                modifier = Modifier.background(
-                    color = backgroundColor,
-                    shape = RoundedCornerShape(32.dp)
-                ),
-                onClick = {
+            TabItem(
+                title = stringResource(id = tabTitle),
+                selected = selectedTabIndex == index,
+                onTabSelected = {
                     onTabSelected(index)
-                },
-                text = {
-                    Text(
-                        text = stringResource(id = tabTitle),
-                        color = textColor
-                    )
                 }
             )
         }
+    }
+}
+
+@Composable
+fun TabItem(
+    title: String,
+    selected: Boolean = false,
+    onTabSelected: () -> Unit
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isItemFocused by interactionSource.collectIsFocusedAsState()
+    val isFocusedOrSelected = isItemFocused || selected
+
+    val animatedBackground by animateColorAsState(
+        animationSpec = tween(500),
+        targetValue = if (isFocusedOrSelected) {
+            MaterialTheme.colorScheme.inverseSurface
+        } else {
+            MaterialTheme.colorScheme.surface
+        }
+    )
+
+    val animatedTextColor by animateColorAsState(
+        animationSpec = tween(500),
+        targetValue = if (isFocusedOrSelected) {
+            MaterialTheme.colorScheme.surface
+        } else {
+            MaterialTheme.colorScheme.onSurface
+        }
+    )
+
+    Tab(selected = selected,
+        interactionSource = interactionSource,
+        modifier = Modifier
+            .background(
+                color = animatedBackground,
+                shape = RoundedCornerShape(32.dp)
+            ),
+        onClick = onTabSelected,
+        text = {
+            Text(
+                text = title,
+                color = animatedTextColor
+            )
+        }
+    )
+
+    if (isItemFocused) {
+        onTabSelected()
     }
 }
 
