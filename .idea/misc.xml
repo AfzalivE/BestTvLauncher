@@ -11,9 +11,13 @@
         <entry key="../../../../../layout/compose-model-1640989493428.xml" value="1.0" />
         <entry key="../../../../../layout/compose-model-1640990712317.xml" value="0.3074074074074074" />
         <entry key="../../../../../layout/compose-model-1640990761483.xml" value="0.1" />
+        <entry key="../../../../../layout/compose-model-1641100536627.xml" value="0.1" />
+        <entry key="../../../../../layout/compose-model-1641100653927.xml" value="0.1" />
+        <entry key="../../../../../layout/compose-model-1641313557684.xml" value="0.1" />
         <entry key="mobile/src/main/res/layout/activity_main.xml" value="0.18489583333333334" />
         <entry key="tv/src/main/res/layout/activity_details.xml" value="0.18489583333333334" />
         <entry key="tv/src/main/res/layout/activity_main.xml" value="0.16927083333333334" />
+        <entry key="tv/src/main/res/xml/preferences.xml" value="0.17936427850655903" />
       </map>
     </option>
   </component>

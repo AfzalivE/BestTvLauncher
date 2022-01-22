@@ -1,7 +1,7 @@
 package com.afzaln.besttvlauncher.ui.home
 
+import android.app.StatusBarManager
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -11,11 +11,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.afzaln.besttvlauncher.R
 import com.afzaln.besttvlauncher.ui.settings.SettingsActivity
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
+import com.afzaln.besttvlauncher.utils.expand
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -39,6 +40,7 @@ fun HomeScaffold(
     val context = LocalContext.current
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
+    val statusBarManager = context.getSystemService(StatusBarManager::class.java)
 
     Scaffold(
         topBar = {
@@ -64,6 +66,19 @@ fun HomeScaffold(
                             imageVector = Icons.Default.Settings,
                             contentDescription = stringResource(
                                 id = R.string.settings_title
+                            )
+                        )
+                    }
+
+                    IconButton(
+                        onClick = {
+                            statusBarManager.expand()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = stringResource(
+                                id = R.string.notifications_title
                             )
                         )
                     }

@@ -17,6 +17,7 @@
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
+    <string name="notifications_title">Notifications</string>
 
     <!-- Channel/Provider preferences -->
     <string name="pref_key_channels">pref_channels</string>

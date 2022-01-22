@@ -12,6 +12,7 @@
         android:required="true" />
 
     <uses-permission android:name="android.permission.READ_TV_LISTINGS" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
 
     <permission android:name="android.permission.QUERY_ALL_PACKAGES" />
 
