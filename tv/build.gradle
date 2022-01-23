@@ -75,6 +75,7 @@ dependencies {
     implementation("androidx.compose.material:material:$compose_version")
     implementation("com.google.accompanist:accompanist-pager:0.22.0-rc")
     implementation("io.coil-kt:coil-compose:1.4.0")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.0")
 
     // Debug
     implementation("com.squareup.logcat:logcat:0.1")

@@ -101,7 +101,7 @@ private fun ProgramCard(
         ) {
             Image(
                 painter = rememberImagePainter(data = program.thumbnailUri),
-                contentDescription = "Thumbnail for for ${program.title}",
+                contentDescription = "Thumbnail for ${program.title}",
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.fillMaxSize()
             )
