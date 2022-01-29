@@ -88,7 +88,8 @@ fun HomeScaffold(
         content = {
             HorizontalPager(
                 count = pages.size,
-                state = pagerState
+                state = pagerState,
+                userScrollEnabled = false
             ) {
                 pages[pagerState.currentPage]()
             }
