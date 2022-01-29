@@ -26,12 +26,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.GridItemSpan
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.material.Card
@@ -94,7 +89,7 @@ fun AppsScreen() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AppList(appList: List<AppInfo>) {
-    val listState = rememberLazyListState()
+    val listState = rememberLazyGridState()
     val coroutineScope = rememberCoroutineScope()
 
     val relocationRequester = remember { BringIntoViewRequester() }
@@ -112,7 +107,7 @@ fun AppList(appList: List<AppInfo>) {
         }
 
         itemsIndexed(items = repeatList,
-            spans = { index, item ->
+            span = { index, item ->
                 GridItemSpan(1)
             }) { index, appInfo ->
             AppCard(
