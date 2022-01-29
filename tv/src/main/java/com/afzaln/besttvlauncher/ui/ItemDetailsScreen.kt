@@ -29,13 +29,13 @@ import com.afzaln.besttvlauncher.utils.locatorViewModel
 
 
 @Composable
-fun ItemDetailsScreen() {
+fun ItemDetailsScreen(channelId: Long, programId: Long) {
     val viewModel: HomeViewModel = locatorViewModel()
     val programMap by viewModel.programsByChannel.observeAsState(emptyMap())
 
     if (programMap.isNotEmpty()) {
-        // TODO: Get PreviewProgram from ID
-        val program = programMap.values.toList()[0][0]
+        val channel = programMap.keys.first { it.id == channelId }
+        val program = requireNotNull(programMap[channel]).first { it.id == programId }
         ItemDetailsContent(program = program)
     }
 }

@@ -15,6 +15,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.tvprovider.media.tv.PreviewChannel
 import androidx.tvprovider.media.tv.PreviewProgram
 import coil.compose.rememberImagePainter
@@ -24,38 +25,53 @@ import com.afzaln.besttvlauncher.ui.theme.AppTheme
 import com.afzaln.besttvlauncher.utils.locatorViewModel
 
 @Composable
-fun ChannelsScreen() {
+fun ChannelsScreen(navController: NavHostController) {
     val viewModel: HomeViewModel = locatorViewModel()
     val programList by viewModel.programsByChannel.observeAsState(emptyMap())
 
-    ChannelsScreenContent(programList)
+    ChannelsScreenContent(programList) { channelId, programId ->
+        // FIXME: Provide arguments for Program
+        navController.navigate("itemdetails/$channelId/$programId")
+    }
 }
 
 @Composable
-private fun ChannelsScreenContent(programList: Map<PreviewChannel, List<PreviewProgram>>) {
+private fun ChannelsScreenContent(
+    programList: Map<PreviewChannel, List<PreviewProgram>>,
+    onProgramClicked: (Long, Long) -> Unit
+) {
     Column(
         modifier = Modifier
             .padding(horizontal = 48.dp)
             .padding(top = 27.dp, bottom = 27.dp)
     ) {
-        ChannelList(programList)
+        ChannelList(programList, onProgramClicked)
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ChannelList(programMap: Map<PreviewChannel, List<PreviewProgram>>) {
+fun ChannelList(
+    programMap: Map<PreviewChannel, List<PreviewProgram>>,
+    onProgramClicked: (Long, Long) -> Unit
+) {
     val channels = programMap.keys.toList()
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         channels.forEach { channel ->
-            ChannelRow(channel, programMap[channel] ?: emptyList())
+            ChannelRow(channel, programMap[channel] ?: emptyList(), onProgramClicked)
         }
     }
 }
 
 @Composable
-fun ChannelRow(channel: PreviewChannel, programs: List<PreviewProgram>) {
+fun ChannelRow(
+    channel: PreviewChannel,
+    programs: List<PreviewProgram>,
+    onProgramClicked: (Long, Long) -> Unit
+) {
     if (programs.isEmpty()) return
+
+    val context = LocalContext.current
 
     Column {
         Text(
@@ -65,7 +81,14 @@ fun ChannelRow(channel: PreviewChannel, programs: List<PreviewProgram>) {
         )
         Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
             programs.forEach { program ->
-                ProgramCard(program, onFocus = {})
+                ProgramCard(program, onFocus = {}, onClick = {
+                    // TODO: Handle Channels where intent should launch directly.
+                    onProgramClicked(channel.id, program.id)
+//                    val intent = program.intent
+//                    if (intent != null) {
+//                        context.startActivity(intent)
+//                    }
+                })
             }
         }
     }
@@ -74,10 +97,9 @@ fun ChannelRow(channel: PreviewChannel, programs: List<PreviewProgram>) {
 @Composable
 private fun ProgramCard(
     program: PreviewProgram,
-    onFocus: () -> Unit
+    onFocus: () -> Unit,
+    onClick: () -> Unit
 ) {
-    val context = LocalContext.current
-
     Column(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 16.dp),
@@ -93,10 +115,7 @@ private fun ProgramCard(
                     onFocus = onFocus
                 )
                 .clickable {
-                    val intent = program.intent
-                    if (intent != null) {
-                        context.startActivity(intent)
-                    }
+                    onClick()
                 }
         ) {
             Image(
@@ -117,5 +136,5 @@ private fun ProgramCard(
 @Preview(uiMode = Configuration.UI_MODE_TYPE_TELEVISION)
 @Composable
 fun PreviewChannel() {
-    ChannelsScreenContent(emptyMap())
+    ChannelsScreenContent(emptyMap(), onProgramClicked = { _, _ -> })
 }
