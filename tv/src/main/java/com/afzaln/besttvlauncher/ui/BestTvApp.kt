@@ -4,7 +4,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
@@ -24,15 +24,35 @@ fun BestTvApp() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+
+            val parentNavController = rememberAnimatedNavController()
             val navController = rememberAnimatedNavController()
-            AnimatedNavHost(navController = navController, startDestination = "home") {
+            var selectedTabIndex by remember { mutableStateOf(0) }
+            val tabs = listOf(
+                "channels",
+                "apps"
+            )
+            AnimatedNavHost(navController = parentNavController, startDestination = "home") {
                 composable("home") {
                     HomeScaffold(
-                        pages = listOf(
-                            { ChannelsScreen(navController) },
-                            { AppsScreen() }
-                        )
-                    )
+                        selectedTabIndex = selectedTabIndex,
+                        onTabSelected = { index ->
+                            selectedTabIndex = index
+                            navController.navigate(tabs[index])
+                        }
+                    ) {
+                        AnimatedNavHost(
+                            navController = navController,
+                            startDestination = "channels"
+                        ) {
+                            composable("channels") {
+                                ChannelsScreen(navController = parentNavController)
+                            }
+                            composable("apps") {
+                                AppsScreen()
+                            }
+                        }
+                    }
                 }
                 composable(
                     route = "itemdetails/{channelId}/{programId}",
@@ -46,7 +66,8 @@ fun BestTvApp() {
                     )
                 ) { backstackEntry ->
                     ItemDetailsScreen(
-                        channelId = backstackEntry.arguments?.getLong("channelId") ?: -1,
+                        channelId = backstackEntry.arguments?.getLong("channelId")
+                            ?: -1,
                         programId = backstackEntry.arguments?.getLong("programId") ?: -1
                     )
                 }

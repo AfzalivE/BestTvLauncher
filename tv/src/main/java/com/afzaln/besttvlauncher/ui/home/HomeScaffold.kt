@@ -27,18 +27,17 @@ import com.afzaln.besttvlauncher.ui.settings.SettingsActivity
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 import com.afzaln.besttvlauncher.utils.expand
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
 @Composable
 fun HomeScaffold(
-    pages: List<@Composable () -> Unit>,
+    selectedTabIndex: Int,
+    onTabSelected: (Int) -> Unit,
+    content: @Composable () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
-    val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
     val statusBarManager = context.getSystemService(StatusBarManager::class.java)
 
@@ -47,10 +46,10 @@ fun HomeScaffold(
             SmallTopAppBar(
                 title = {
                     TitleBar(
-                        selectedTabIndex = pagerState.currentPage,
+                        selectedTabIndex = selectedTabIndex,
                         onTabSelected = {
                             coroutineScope.launch {
-                                pagerState.scrollToPage(it)
+                                onTabSelected(it)
                             }
                         }
                     )
@@ -86,13 +85,7 @@ fun HomeScaffold(
             )
         },
         content = {
-            HorizontalPager(
-                count = pages.size,
-                state = pagerState,
-                userScrollEnabled = false
-            ) {
-                pages[pagerState.currentPage]()
-            }
+            content()
         }
     )
 
