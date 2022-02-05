@@ -21,8 +21,10 @@ import androidx.tvprovider.media.tv.PreviewProgram
 import coil.compose.rememberImagePainter
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.ui.apps.dpadFocusable
+import com.afzaln.besttvlauncher.ui.destinations.ItemDetailsScreenDestination
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 import com.afzaln.besttvlauncher.utils.locatorViewModel
+import com.ramcosta.composedestinations.navigation.navigateTo
 
 @Composable
 fun ChannelsScreen(navController: NavHostController) {
@@ -30,8 +32,7 @@ fun ChannelsScreen(navController: NavHostController) {
     val programList by viewModel.programsByChannel.observeAsState(emptyMap())
 
     ChannelsScreenContent(programList) { channelId, programId ->
-        // FIXME: Provide arguments for Program
-        navController.navigate("itemdetails/$channelId/$programId")
+        navController.navigateTo(ItemDetailsScreenDestination(channelId, programId))
     }
 }
 

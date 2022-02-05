@@ -2,14 +2,14 @@ package com.afzaln.besttvlauncher.ui.home
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.navigation.NavHostController
 import com.afzaln.besttvlauncher.ui.apps.AppsScreen
 import com.afzaln.besttvlauncher.ui.channels.ChannelsScreen
+import com.ramcosta.composedestinations.annotation.Destination
 
 @OptIn(ExperimentalAnimationApi::class)
+@Destination(start = true)
 @Composable
 fun HomeScreen(navController: NavHostController) {
 

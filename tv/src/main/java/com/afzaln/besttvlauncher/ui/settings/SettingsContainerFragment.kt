@@ -15,12 +15,12 @@ import logcat.logcat
 
 class SettingsContainerFragment : LeanbackSettingsFragmentCompat() {
     override fun onPreferenceStartFragment(
-        caller: PreferenceFragmentCompat?,
+        caller: PreferenceFragmentCompat,
         pref: Preference
     ): Boolean {
         val args = pref.extras
         val fragment = childFragmentManager.fragmentFactory.instantiate(
-            requireActivity().classLoader, pref.fragment
+            requireActivity().classLoader, requireNotNull(pref.fragment)
         )
         fragment.arguments = args
         fragment.setTargetFragment(caller, 0)
@@ -33,8 +33,8 @@ class SettingsContainerFragment : LeanbackSettingsFragmentCompat() {
     }
 
     override fun onPreferenceStartScreen(
-        caller: PreferenceFragmentCompat?,
-        pref: PreferenceScreen?
+        caller: PreferenceFragmentCompat,
+        pref: PreferenceScreen
     ): Boolean {
         val fragment = SettingsFragment()
         val args = Bundle(1)

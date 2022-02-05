@@ -26,8 +26,9 @@ import com.afzaln.besttvlauncher.R
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.ui.theme.Gray20
 import com.afzaln.besttvlauncher.utils.locatorViewModel
+import com.ramcosta.composedestinations.annotation.Destination
 
-
+@Destination
 @Composable
 fun ItemDetailsScreen(channelId: Long, programId: Long) {
     val viewModel: HomeViewModel = locatorViewModel()
