@@ -11,6 +11,7 @@ import androidx.navigation.navArgument
 import com.afzaln.besttvlauncher.ui.apps.AppsScreen
 import com.afzaln.besttvlauncher.ui.channels.ChannelsScreen
 import com.afzaln.besttvlauncher.ui.home.HomeScaffold
+import com.afzaln.besttvlauncher.ui.home.HomeScreen
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -27,32 +28,10 @@ fun BestTvApp() {
 
             val parentNavController = rememberAnimatedNavController()
             val navController = rememberAnimatedNavController()
-            var selectedTabIndex by remember { mutableStateOf(0) }
-            val tabs = listOf(
-                "channels",
-                "apps"
-            )
+
             AnimatedNavHost(navController = parentNavController, startDestination = "home") {
                 composable("home") {
-                    HomeScaffold(
-                        selectedTabIndex = selectedTabIndex,
-                        onTabSelected = { index ->
-                            selectedTabIndex = index
-                            navController.navigate(tabs[index])
-                        }
-                    ) {
-                        AnimatedNavHost(
-                            navController = navController,
-                            startDestination = "channels"
-                        ) {
-                            composable("channels") {
-                                ChannelsScreen(navController = parentNavController)
-                            }
-                            composable("apps") {
-                                AppsScreen()
-                            }
-                        }
-                    }
+                    HomeScreen(navController = navController)
                 }
                 composable(
                     route = "itemdetails/{channelId}/{programId}",
