@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.tvprovider.media.tv.PreviewChannel
 import androidx.tvprovider.media.tv.PreviewProgram
+import androidx.tvprovider.media.tv.WatchNextProgram
 import com.afzaln.besttvlauncher.data.AppInfoRepository
 import com.afzaln.besttvlauncher.data.ChannelRepository
 import com.afzaln.besttvlauncher.data.ProgramRepository
@@ -34,6 +35,10 @@ class HomeViewModel(
 
             return@map map
         }
+
+    val watchNextChannel = liveData {
+        emit(programRepository.watchNextPrograms)
+    }
 
     val selectedChannels: Set<String>
         get() = userPreferences.enabledChannels

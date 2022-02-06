@@ -16,8 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.tvprovider.media.tv.PreviewChannel
-import androidx.tvprovider.media.tv.PreviewProgram
+import androidx.tvprovider.media.tv.*
 import coil.compose.rememberImagePainter
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.ui.apps.dpadFocusable
@@ -30,8 +29,9 @@ import com.ramcosta.composedestinations.navigation.navigateTo
 fun ChannelsScreen(navController: NavHostController) {
     val viewModel: HomeViewModel = locatorViewModel()
     val programList by viewModel.programsByChannel.observeAsState(emptyMap())
+    val watchNextList by viewModel.watchNextChannel.observeAsState(emptyList())
 
-    ChannelsScreenContent(programList) { channelId, programId ->
+    ChannelsScreenContent(programList, watchNextList) { channelId, programId ->
         navController.navigateTo(ItemDetailsScreenDestination(channelId, programId))
     }
 }
@@ -39,6 +39,7 @@ fun ChannelsScreen(navController: NavHostController) {
 @Composable
 private fun ChannelsScreenContent(
     programList: Map<PreviewChannel, List<PreviewProgram>>,
+    watchNextList: List<WatchNextProgram>,
     onProgramClicked: (Long, Long) -> Unit
 ) {
     Column(
@@ -46,7 +47,7 @@ private fun ChannelsScreenContent(
             .padding(horizontal = 48.dp)
             .padding(top = 27.dp, bottom = 27.dp)
     ) {
-        ChannelList(programList, onProgramClicked)
+        ChannelList(programList, watchNextList, onProgramClicked)
     }
 }
 
@@ -54,18 +55,25 @@ private fun ChannelsScreenContent(
 @Composable
 fun ChannelList(
     programMap: Map<PreviewChannel, List<PreviewProgram>>,
+    watchNextList: List<WatchNextProgram>,
     onProgramClicked: (Long, Long) -> Unit
 ) {
     val channels = programMap.keys.toList()
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         channels.forEach { channel ->
-            ChannelRow(channel, programMap[channel] ?: emptyList(), onProgramClicked)
+            ProgramInChannelRow(channel, programMap[channel] ?: emptyList(), onProgramClicked)
         }
+        WatchNextRow(watchNextList)
     }
 }
 
 @Composable
-fun ChannelRow(
+fun WatchNextRow(programs: List<WatchNextProgram>) {
+    CardRow(title = "Watch Next", programs = programs, onClick = {})
+}
+
+@Composable
+fun ProgramInChannelRow(
     channel: PreviewChannel,
     programs: List<PreviewProgram>,
     onProgramClicked: (Long, Long) -> Unit
@@ -74,21 +82,40 @@ fun ChannelRow(
 
     val context = LocalContext.current
 
+    CardRow(
+        title = channel.displayName.toString(),
+        programs = programs,
+        onClick = { programId ->
+            onProgramClicked(channel.id, programId)
+            // TODO: Handle Channels where intent should launch directly.
+            // val intent = program.intent
+            // if (intent != null) {
+            //     context.startActivity(intent)
+            // }
+        }
+    )
+}
+
+@Composable
+fun CardRow(
+    title: String,
+    programs: List<BasePreviewProgram>,
+    onClick: (programId: Long) -> Unit
+) {
+    if (programs.isEmpty()) return
+
+    val context = LocalContext.current
+
     Column {
         Text(
-            text = channel.displayName.toString(),
+            text = title,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onBackground
         )
         Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
             programs.forEach { program ->
                 ProgramCard(program, onFocus = {}, onClick = {
-                    // TODO: Handle Channels where intent should launch directly.
-                    onProgramClicked(channel.id, program.id)
-//                    val intent = program.intent
-//                    if (intent != null) {
-//                        context.startActivity(intent)
-//                    }
+                    onClick(program.id)
                 })
             }
         }
@@ -97,7 +124,7 @@ fun ChannelRow(
 
 @Composable
 private fun ProgramCard(
-    program: PreviewProgram,
+    program: BasePreviewProgram,
     onFocus: () -> Unit,
     onClick: () -> Unit
 ) {
@@ -137,5 +164,5 @@ private fun ProgramCard(
 @Preview(uiMode = Configuration.UI_MODE_TYPE_TELEVISION)
 @Composable
 fun PreviewChannel() {
-    ChannelsScreenContent(emptyMap(), onProgramClicked = { _, _ -> })
+    ChannelsScreenContent(emptyMap(), emptyList()) { _, _ -> }
 }
