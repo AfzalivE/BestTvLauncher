@@ -28,14 +28,16 @@ fun HomeScreen(navController: NavHostController) {
                 if (targetState > initialState) {
                     // If the target number is larger, it slides left and fades in
                     // while the initial (smaller) number slides down and fades out.
-                    slideInHorizontally(animationSpec = tween(3000)) { width -> width } + fadeIn() with
-                            slideOutHorizontally { width -> -width } + fadeOut(tween(3000))
+                    slideInHorizontally { width -> width } + fadeIn() with
+                            slideOutHorizontally { width -> -width } + fadeOut()
                 } else {
                     // If the target number is smaller, it slides right and fades in
                     // while the initial number left and fades out.
                     slideInHorizontally { width -> -width } + fadeIn() with
                             slideOutHorizontally { width -> width } + fadeOut()
-                }
+                }.using(
+                    SizeTransform(clip = false)
+                )
             }
         ) { targetCount ->
             when (targetCount) {
