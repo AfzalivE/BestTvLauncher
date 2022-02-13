@@ -108,6 +108,7 @@ fun TitleBar(
     TabRow(
         modifier = Modifier.requiredWidth(tabRowWidth),
         indicator = {},
+        divider = {},
         selectedTabIndex = selectedTabIndex,
         backgroundColor = MaterialTheme.colorScheme.surface
     ) {
