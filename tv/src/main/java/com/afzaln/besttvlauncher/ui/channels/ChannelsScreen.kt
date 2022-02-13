@@ -16,13 +16,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.tvprovider.media.tv.*
+import androidx.tvprovider.media.tv.BasePreviewProgram
+import androidx.tvprovider.media.tv.PreviewChannel
+import androidx.tvprovider.media.tv.PreviewProgram
+import androidx.tvprovider.media.tv.WatchNextProgram
 import coil.compose.rememberImagePainter
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.ui.apps.dpadFocusable
 import com.afzaln.besttvlauncher.ui.destinations.ItemDetailsScreenDestination
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 import com.afzaln.besttvlauncher.utils.locatorViewModel
+import com.afzaln.besttvlauncher.utils.posterAspectRatio
 import com.ramcosta.composedestinations.navigation.navigateTo
 
 @Composable
@@ -137,7 +141,7 @@ private fun ProgramCard(
             shape = AppTheme.cardShape,
             modifier = Modifier
                 .requiredHeight(120.dp)
-                .requiredWidth(160.dp)
+                .aspectRatio(program.posterAspectRatio())
                 .dpadFocusable(
                     unfocusedBorderColor = MaterialTheme.colorScheme.background,
                     onFocus = onFocus
@@ -147,16 +151,17 @@ private fun ProgramCard(
                 }
         ) {
             Image(
-                painter = rememberImagePainter(data = program.thumbnailUri),
+                painter = rememberImagePainter(data = program.posterArtUri),
                 contentDescription = "Thumbnail for ${program.title}",
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
         }
         Text(
-            text = program.title?.take(20) ?: "empty",
+            text = program.title ?: "empty",
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.widthIn(max = 160.dp)
         )
     }
 }
