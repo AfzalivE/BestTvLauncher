@@ -24,4 +24,5 @@
     <string name="pref_summary_channels">Select providers to show recommendations from</string>
     <string name="pref_title_channels">Channels</string>
     <string name="content_description_poster_art">Poster art</string>
+    <string name="duration">%1$d hr %2$d min</string>
 </resources>
