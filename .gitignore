@@ -16,3 +16,4 @@ local.properties
 /github.properties
 .idea/misc.xml
 sample/programMap
+signing.properties
