@@ -1,9 +1,8 @@
 package com.afzaln.besttvlauncher.ui
 
 import android.net.Uri
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -20,16 +19,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintLayoutScope
+import androidx.navigation.NavBackStackEntry
 import androidx.tvprovider.media.tv.BasePreviewProgram
 import androidx.tvprovider.media.tv.PreviewProgram
 import coil.compose.rememberImagePainter
@@ -39,18 +42,23 @@ import com.afzaln.besttvlauncher.ui.theme.Gray20
 import com.afzaln.besttvlauncher.ui.theme.Gray700
 import com.afzaln.besttvlauncher.utils.locatorViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.spec.DestinationStyle
 import kotlin.time.Duration.Companion.milliseconds
 
-@Destination
+@OptIn(ExperimentalAnimationApi::class)
+@Destination(style = ItemDetailsTransition::class)
 @Composable
 fun ItemDetailsScreen(channelId: Long, programId: Long) {
     val viewModel: HomeViewModel = locatorViewModel()
     val programMap by viewModel.programsByChannel.observeAsState(emptyMap())
 
-    if (programMap.isNotEmpty()) {
-        val channel = programMap.keys.first { it.id == channelId }
-        val program = requireNotNull(programMap[channel]).first { it.id == programId }
-        ItemDetailsContent(program = program)
+    Crossfade(targetState = programMap.isNotEmpty()) { showContent ->
+        if (showContent) {
+            val channel = programMap.keys.first { it.id == channelId }
+            val program = requireNotNull(programMap[channel]).first { it.id == programId }
+
+            ItemDetailsContent(program = program)
+        }
     }
 }
 
@@ -70,32 +78,67 @@ fun ItemDetailsContent(program: PreviewProgram) {
                     top.linkTo(parent.top)
                 }
             )
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .constrainAs(titleDetails) {
-                        bottom.linkTo(header.bottom)
-                    }
-                    .padding(bottom = 48.dp)
-                    .padding(horizontal = 64.dp)
-            ) {
-                Text(
-                    text = program.title,
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                MetadataRow(program)
-                Text(
-                    text = program.description,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
-                    modifier = Modifier.fillMaxWidth(0.75f)
-                )
-                ButtonRow(program)
-            }
+            ItemInfo(titleDetails, program)
         }
     }
 }
+
+@Composable
+private fun ConstraintLayoutScope.ItemInfo(
+    titleDetails: ConstrainedLayoutReference,
+    program: PreviewProgram
+) {
+
+    val initialState = AnimationState(opacity = 0f, scale = 0.75f)
+    val finalState = AnimationState(opacity = 1f, scale = 1f)
+
+    val state = remember { MutableTransitionState(initialState) }.apply {
+        // Start the animation immediately.
+        targetState = finalState
+    }
+
+    val transition = updateTransition(
+        transitionState = state,
+        label = "ItemInfo"
+    )
+
+    val animationState = transition.animateContent()
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .constrainAs(titleDetails) {
+                bottom.linkTo(parent.bottom)
+            }
+            .padding(bottom = 48.dp)
+            .padding(horizontal = 64.dp)
+            .graphicsLayer(
+                transformOrigin = TransformOrigin(0f, 1f),
+                scaleX = animationState.scale, scaleY = animationState.scale
+            )
+            .alpha(animationState.opacity)
+    ) {
+        Text(
+            text = program.title,
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        MetadataRow(program)
+        Text(
+            text = program.description,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
+            modifier = Modifier.fillMaxWidth(0.75f)
+        )
+        ButtonRow(program)
+    }
+}
+
+data class AnimationState(
+    val blur: Dp = 0.dp,
+    val opacity: Float,
+    val scale: Float
+)
 
 @Composable
 fun MediaHeaderImage(
@@ -103,11 +146,30 @@ fun MediaHeaderImage(
     modifier: Modifier = Modifier
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
+
+    val initialState = AnimationState(blur = 1.dp, opacity = 0f, scale = 1.25f)
+    val finalState = AnimationState(blur = 0.dp, opacity = 1f, scale = 1f)
+
+    val state = remember { MutableTransitionState(initialState) }.apply {
+        // Start the animation immediately.
+        targetState = finalState
+    }
+
+    val transition = updateTransition(
+        transitionState = state,
+        label = "MediaHeader"
+    )
+
+    val animationState = transition.animateContent()
+
     Image(
         painter = rememberImagePainter(data = posterArtUri),
         contentDescription = stringResource(id = R.string.content_description_poster_art),
         contentScale = ContentScale.FillWidth,
         modifier = modifier
+            .scale(animationState.scale)
+            .blur(animationState.blur)
+            .alpha(animationState.opacity)
             .fillMaxWidth()
             .drawWithCache {
                 val gradient = Brush.horizontalGradient(
@@ -122,6 +184,39 @@ fun MediaHeaderImage(
             }
             .requiredHeight(screenHeight.dp)
     )
+}
+
+@Composable
+private fun Transition<AnimationState>.animateContent(): AnimationState {
+    val blur by animateDp(label = "Blur",
+        transitionSpec = {
+            tween(
+                durationMillis = 1000,
+                easing = FastOutSlowInEasing
+            )
+        }
+    ) { it.blur }
+
+    val opacity by animateFloat(
+        label = "Opacity",
+        transitionSpec = {
+            tween(
+                durationMillis = 1000,
+                easing = FastOutSlowInEasing
+            )
+        }
+    ) { it.opacity }
+
+    val scale by animateFloat(
+        label = "Opacity",
+        transitionSpec = {
+            tween(
+                durationMillis = 1000,
+                easing = FastOutSlowInEasing
+            )
+        }
+    ) { it.scale }
+    return AnimationState(blur, opacity, scale)
 }
 
 @Composable
@@ -200,5 +295,12 @@ fun ButtonRow(previewProgram: BasePreviewProgram) {
             text = "Watch now",
             color = animatedTextColor
         )
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+object ItemDetailsTransition : DestinationStyle.Animated {
+    override fun AnimatedContentScope<NavBackStackEntry>.enterTransition(): EnterTransition {
+        return fadeIn(animationSpec = tween(1000))
     }
 }

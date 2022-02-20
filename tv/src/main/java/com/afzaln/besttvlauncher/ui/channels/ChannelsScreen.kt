@@ -1,21 +1,23 @@
 package com.afzaln.besttvlauncher.ui.channels
 
 import android.content.res.Configuration
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import androidx.tvprovider.media.tv.BasePreviewProgram
 import androidx.tvprovider.media.tv.PreviewChannel
 import androidx.tvprovider.media.tv.PreviewProgram
@@ -30,7 +32,7 @@ import com.afzaln.besttvlauncher.utils.posterAspectRatio
 import com.ramcosta.composedestinations.navigation.navigateTo
 
 @Composable
-fun ChannelsScreen(navController: NavHostController) {
+fun ChannelsScreen(navController: NavController) {
     val viewModel: HomeViewModel = locatorViewModel()
     val programList by viewModel.programsByChannel.observeAsState(emptyMap())
     val watchNextList by viewModel.watchNextChannel.observeAsState(emptyList())
@@ -132,8 +134,19 @@ private fun ProgramCard(
     onFocus: () -> Unit,
     onClick: () -> Unit
 ) {
+    var isClicked by remember { mutableStateOf(false) }
+
+    val animatedScale by animateFloatAsState(
+        animationSpec = tween(1000),
+        targetValue = if (isClicked) 1.25f else 1f,
+        finishedListener = {
+            onClick()
+        }
+    )
+
     Column(
         modifier = Modifier
+            .scale(animatedScale)
             .padding(horizontal = 8.dp, vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -147,7 +160,7 @@ private fun ProgramCard(
                     onFocus = onFocus
                 )
                 .clickable {
-                    onClick()
+                    isClicked = true
                 }
         ) {
             Image(
