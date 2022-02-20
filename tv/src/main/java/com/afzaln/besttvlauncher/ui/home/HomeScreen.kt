@@ -3,6 +3,7 @@ package com.afzaln.besttvlauncher.ui.home
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.*
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.afzaln.besttvlauncher.ui.apps.AppsScreen
 import com.afzaln.besttvlauncher.ui.channels.ChannelsScreen
@@ -11,7 +12,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 @OptIn(ExperimentalAnimationApi::class)
 @Destination(start = true)
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(navController: NavController) {
 
     var selectedTab by remember { mutableStateOf(CHANNEL_SCREEN) }
 
