@@ -9,3 +9,7 @@
 - Fixed apps scaling when switching tabs
 - Fixed thumbnail aspect ratio
 - Fixed black underline on tabs
+
+## February 19th 2022
+- Add metadata and button rows in ItemDetails screen
+- Add Channel to ItemDetails transition
