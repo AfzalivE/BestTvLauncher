@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.material.Card
@@ -67,7 +67,7 @@ fun AppList(appList: List<AppInfo>) {
 
     // LazyColumn(
     LazyVerticalGrid(
-        cells = GridCells.Fixed(6),
+        columns = GridCells.Fixed(6),
         state = listState
     ) {
         val repeatList = mutableListOf<AppInfo>()

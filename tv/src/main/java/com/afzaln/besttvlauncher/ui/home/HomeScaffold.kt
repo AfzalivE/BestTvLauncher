@@ -26,10 +26,9 @@ import com.afzaln.besttvlauncher.R
 import com.afzaln.besttvlauncher.ui.settings.SettingsActivity
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 import com.afzaln.besttvlauncher.utils.expand
-import com.google.accompanist.pager.ExperimentalPagerApi
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScaffold(
     selectedTabIndex: Int,
@@ -43,46 +42,47 @@ fun HomeScaffold(
 
     Scaffold(
         topBar = {
-            SmallTopAppBar(
-                title = {
-                    TitleBar(
-                        selectedTabIndex = selectedTabIndex,
-                        onTabSelected = {
-                            coroutineScope.launch {
-                                onTabSelected(it)
-                            }
-                        }
-                    )
-                },
-                actions = {
-                    IconButton(
-                        modifier = Modifier.focusRequester(focusRequester),
-                        onClick = {
-                            context.startActivity(SettingsActivity.createIntent(context))
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = stringResource(
-                                id = R.string.settings_title
-                            )
-                        )
-                    }
-
-                    IconButton(
-                        onClick = {
-                            statusBarManager.expand()
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Notifications,
-                            contentDescription = stringResource(
-                                id = R.string.notifications_title
-                            )
-                        )
+            TitleBar(
+                selectedTabIndex = selectedTabIndex,
+                onTabSelected = {
+                    coroutineScope.launch {
+                        onTabSelected(it)
                     }
                 }
             )
+//            SmallTopAppBar(
+//                title = {
+//
+//                },
+//                actions = {
+//                    IconButton(
+//                        modifier = Modifier.focusRequester(focusRequester),
+//                        onClick = {
+//                            context.startActivity(SettingsActivity.createIntent(context))
+//                        }
+//                    ) {
+//                        Icon(
+//                            imageVector = Icons.Default.Settings,
+//                            contentDescription = stringResource(
+//                                id = R.string.settings_title
+//                            )
+//                        )
+//                    }
+//
+//                    IconButton(
+//                        onClick = {
+//                            statusBarManager.expand()
+//                        }
+//                    ) {
+//                        Icon(
+//                            imageVector = Icons.Default.Notifications,
+//                            contentDescription = stringResource(
+//                                id = R.string.notifications_title
+//                            )
+//                        )
+//                    }
+//                }
+//            )
         },
         content = {
             content()
