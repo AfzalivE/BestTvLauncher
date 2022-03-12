@@ -13,3 +13,8 @@
 ## February 19th 2022
 - Add metadata and button rows in ItemDetails screen
 - Add Channel to ItemDetails transition
+
+# March 12th 2022
+- Fix app needing restart after TV listings permission is granted
+- Cache channel and program data in memory
+- Update Coil to 2.0.0-rc01, significant different in load times! 🎉 
