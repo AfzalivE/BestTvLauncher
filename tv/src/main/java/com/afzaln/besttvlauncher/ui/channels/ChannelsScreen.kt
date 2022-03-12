@@ -37,6 +37,10 @@ fun ChannelsScreen(navController: NavController) {
     val programList by viewModel.programsByChannel.observeAsState(emptyMap())
     val watchNextList by viewModel.watchNextChannel.observeAsState(emptyList())
 
+    LaunchedEffect(key1 = Unit, block = {
+        viewModel.loadData()
+    })
+
     ChannelsScreenContent(programList, watchNextList) { channelId, programId ->
         navController.navigateTo(ItemDetailsScreenDestination(channelId, programId))
     }
