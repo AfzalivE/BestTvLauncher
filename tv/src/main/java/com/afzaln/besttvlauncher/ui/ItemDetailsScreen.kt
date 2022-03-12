@@ -35,6 +35,7 @@ import androidx.constraintlayout.compose.ConstraintLayoutScope
 import androidx.navigation.NavBackStackEntry
 import androidx.tvprovider.media.tv.BasePreviewProgram
 import androidx.tvprovider.media.tv.PreviewProgram
+import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import com.afzaln.besttvlauncher.R
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
@@ -162,8 +163,8 @@ fun MediaHeaderImage(
 
     val animationState = transition.animateContent()
 
-    Image(
-        painter = rememberImagePainter(data = posterArtUri),
+    AsyncImage(
+        model = posterArtUri,
         contentDescription = stringResource(id = R.string.content_description_poster_art),
         contentScale = ContentScale.FillWidth,
         modifier = modifier

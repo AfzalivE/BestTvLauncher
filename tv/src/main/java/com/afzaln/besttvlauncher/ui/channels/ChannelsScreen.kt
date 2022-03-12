@@ -22,6 +22,8 @@ import androidx.tvprovider.media.tv.BasePreviewProgram
 import androidx.tvprovider.media.tv.PreviewChannel
 import androidx.tvprovider.media.tv.PreviewProgram
 import androidx.tvprovider.media.tv.WatchNextProgram
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.ui.apps.dpadFocusable
@@ -167,8 +169,8 @@ private fun ProgramCard(
                     isClicked = true
                 }
         ) {
-            Image(
-                painter = rememberImagePainter(data = program.posterArtUri),
+            AsyncImage(
+                model = program.posterArtUri,
                 contentDescription = "Thumbnail for ${program.title}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
