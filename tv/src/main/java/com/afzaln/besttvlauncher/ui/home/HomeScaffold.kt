@@ -9,23 +9,16 @@ import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.afzaln.besttvlauncher.R
-import com.afzaln.besttvlauncher.ui.settings.SettingsActivity
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
-import com.afzaln.besttvlauncher.utils.expand
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -110,7 +103,7 @@ fun TitleBar(
         indicator = {},
         divider = {},
         selectedTabIndex = selectedTabIndex,
-        backgroundColor = MaterialTheme.colorScheme.surface
+        containerColor = MaterialTheme.colorScheme.surface
     ) {
         tabList.forEachIndexed { index, tabTitle ->
             TabItem(
