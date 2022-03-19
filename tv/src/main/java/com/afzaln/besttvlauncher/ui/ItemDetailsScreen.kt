@@ -232,11 +232,13 @@ fun MetadataRow(previewProgram: BasePreviewProgram) {
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f)
         )
 
-        Text(
-            text = previewProgram.releaseDate,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f)
-        )
+        previewProgram.releaseDate?.let { releaseDate ->
+            Text(
+                text = releaseDate,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f)
+            )
+        }
 
         val durations =
             previewProgram.durationMillis.milliseconds.toComponents { hours, minutes, _, _ ->
