@@ -56,7 +56,7 @@ fun AppsScreen() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AppList(appList: List<AppInfo>) {
-    val listState = rememberLazyGridState()
+    val gridState = rememberLazyGridState()
     val coroutineScope = rememberCoroutineScope()
 
     val relocationRequester = remember { BringIntoViewRequester() }
@@ -66,10 +66,10 @@ fun AppList(appList: List<AppInfo>) {
     // LazyColumn(
     LazyVerticalGrid(
         columns = GridCells.Fixed(6),
-        state = listState
+        state = gridState
     ) {
         val repeatList = mutableListOf<AppInfo>()
-        repeat(40) {
+        repeat(5) {
             repeatList += appList
         }
 
@@ -82,7 +82,7 @@ fun AppList(appList: List<AppInfo>) {
                 modifier = Modifier.bringIntoViewRequester(relocationRequester),
                 onFocus = {
                     val offset =
-                        (listState.layoutInfo.viewportEndOffset - listState.layoutInfo.viewportStartOffset) / 2
+                        (gridState.layoutInfo.viewportEndOffset - gridState.layoutInfo.viewportStartOffset) / 2
                     logcat { "$index is focused, item height is $offset" }
 //                    coroutineScope.launch {
 //                        // relocationRequester.bringIntoView()
