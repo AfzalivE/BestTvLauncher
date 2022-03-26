@@ -3,7 +3,6 @@ package com.afzaln.besttvlauncher.ui
 import android.net.Uri
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
@@ -32,34 +31,30 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintLayoutScope
-import androidx.navigation.NavBackStackEntry
 import androidx.tvprovider.media.tv.BasePreviewProgram
 import androidx.tvprovider.media.tv.PreviewProgram
 import coil.compose.AsyncImage
-import coil.compose.rememberImagePainter
 import com.afzaln.besttvlauncher.R
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.ui.theme.Gray20
 import com.afzaln.besttvlauncher.ui.theme.Gray700
 import com.afzaln.besttvlauncher.utils.locatorViewModel
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.spec.DestinationStyle
 import kotlin.time.Duration.Companion.milliseconds
 
-@OptIn(ExperimentalAnimationApi::class)
-@Destination(style = ItemDetailsTransition::class)
 @Composable
 fun ItemDetailsScreen(channelId: Long, programId: Long) {
     val viewModel: HomeViewModel = locatorViewModel()
     val programMap by viewModel.programsByChannel.observeAsState(emptyMap())
 
-    Crossfade(targetState = programMap.isNotEmpty()) { showContent ->
-        if (showContent) {
-            val channel = programMap.keys.first { it.id == channelId }
-            val program = requireNotNull(programMap[channel]).first { it.id == programId }
+    AnimatedVisibility(
+        visible = programMap.isNotEmpty(),
+        enter = fadeIn(tween()),
+        exit = fadeOut(tween())
+    ) {
+        val channel = programMap.keys.first { it.id == channelId }
+        val program = requireNotNull(programMap[channel]).first { it.id == programId }
 
-            ItemDetailsContent(program = program)
-        }
+        ItemDetailsContent(program = program)
     }
 }
 
@@ -298,12 +293,5 @@ fun ButtonRow(previewProgram: BasePreviewProgram) {
             text = "Watch now",
             color = animatedTextColor
         )
-    }
-}
-
-@OptIn(ExperimentalAnimationApi::class)
-object ItemDetailsTransition : DestinationStyle.Animated {
-    override fun AnimatedContentScope<NavBackStackEntry>.enterTransition(): EnterTransition {
-        return fadeIn(animationSpec = tween(1000))
     }
 }

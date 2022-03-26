@@ -2,52 +2,58 @@ package com.afzaln.besttvlauncher.ui.home
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.runtime.*
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import com.afzaln.besttvlauncher.ui.apps.AppsScreen
-import com.afzaln.besttvlauncher.ui.channels.ChannelsScreen
-import com.ramcosta.composedestinations.annotation.Destination
+import androidx.compose.runtime.Composable
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import cafe.adriel.voyager.navigator.tab.TabNavigator
+import cafe.adriel.voyager.transitions.ScreenTransition
+import com.afzaln.besttvlauncher.ui.Apps
+import com.afzaln.besttvlauncher.ui.Channels
 
-@OptIn(ExperimentalAnimationApi::class)
-@Destination(start = true)
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen() {
+    val tabs = listOf(Channels, Apps)
 
-    var selectedTab by remember { mutableStateOf(CHANNEL_SCREEN) }
+    TabNavigator(tab = Channels) {
+        val tabNavigator = LocalTabNavigator.current
+        val navigator = LocalNavigator.currentOrThrow
 
-    HomeScaffold(
-        selectedTabIndex = selectedTab,
-        onTabSelected = {
-            selectedTab = it
-        }
-    ) {
-        AnimatedContent(
-            targetState = selectedTab,
-            transitionSpec = {
-                // Compare the incoming number with the previous number.
-                if (targetState > initialState) {
-                    // If the target number is larger, it slides left and fades in
-                    // while the initial (smaller) number slides down and fades out.
-                    slideInHorizontally { width -> width } + fadeIn() with
-                            slideOutHorizontally { width -> -width } + fadeOut()
-                } else {
-                    // If the target number is smaller, it slides right and fades in
-                    // while the initial number left and fades out.
-                    slideInHorizontally { width -> -width } + fadeIn() with
-                            slideOutHorizontally { width -> width } + fadeOut()
-                }.using(
-                    SizeTransform(clip = false)
-                )
+        HomeScaffold(
+            selectedTab = tabNavigator.current,
+            tabs = tabs,
+            onTabSelected = {
+                tabNavigator.current = it
             }
-        ) { targetCount ->
-            when (targetCount) {
-                CHANNEL_SCREEN -> ChannelsScreen(navController)
-                APPS_SCREEN -> AppsScreen()
-            }
+        ) {
+            TabTransition(navigator)
         }
     }
 }
 
-const val CHANNEL_SCREEN = 0
-const val APPS_SCREEN = 1
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun TabTransition(navigator: Navigator) {
+    ScreenTransition(navigator = navigator, transition = {
+        if (Channels isTransitioningTo Apps) {
+            fadeIn(tween(duration)) +
+                    slideInHorizontally(tween(duration), initialOffsetX = { xOffset }) with
+                    fadeOut(tween(duration)) +
+                    slideOutHorizontally(tween(duration), targetOffsetX = { -xOffset })
+        } else if (Apps isTransitioningTo Channels) {
+            fadeIn(tween(duration)) +
+                    slideInHorizontally(tween(duration), initialOffsetX = { -xOffset }) with
+                    fadeOut(tween(duration)) +
+                    slideOutHorizontally(
+                        tween(duration),
+                        targetOffsetX = { xOffset }
+                    )
+        } else {
+            fadeIn() with fadeOut()
+        }
+    })
+}
+
+const val duration = 1000
+const val xOffset = 1000

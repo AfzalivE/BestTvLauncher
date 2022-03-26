@@ -57,14 +57,10 @@ fun AppsScreen() {
 @Composable
 fun AppList(appList: List<AppInfo>) {
     val gridState = rememberLazyGridState()
-    val coroutineScope = rememberCoroutineScope()
-
     val relocationRequester = remember { BringIntoViewRequester() }
 
-    val density = LocalDensity.current
-
-    // LazyColumn(
     LazyVerticalGrid(
+        modifier = Modifier.background(MaterialTheme.colorScheme.background),
         columns = GridCells.Fixed(6),
         state = gridState
     ) {
@@ -84,10 +80,6 @@ fun AppList(appList: List<AppInfo>) {
                     val offset =
                         (gridState.layoutInfo.viewportEndOffset - gridState.layoutInfo.viewportStartOffset) / 2
                     logcat { "$index is focused, item height is $offset" }
-//                    coroutineScope.launch {
-//                        // relocationRequester.bringIntoView()
-//                        listState.scrollToItem(index, scrollOffset = -offset)
-//                    }
                 }
             )
         }

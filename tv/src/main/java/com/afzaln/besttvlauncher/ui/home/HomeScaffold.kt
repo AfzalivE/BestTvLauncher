@@ -22,7 +22,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.tab.Tab
 import com.afzaln.besttvlauncher.R
+import com.afzaln.besttvlauncher.ui.Apps
+import com.afzaln.besttvlauncher.ui.Channels
 import com.afzaln.besttvlauncher.ui.settings.SettingsActivity
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 import com.afzaln.besttvlauncher.utils.expand
@@ -31,8 +34,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScaffold(
-    selectedTabIndex: Int,
-    onTabSelected: (Int) -> Unit,
+    selectedTab: Tab,
+    tabs: List<Tab>,
+    onTabSelected: (Tab) -> Unit,
     content: @Composable () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -47,7 +51,8 @@ fun HomeScaffold(
                 backgroundColor = MaterialTheme.colorScheme.surface,
                 title = {
                     TitleBar(
-                        selectedTabIndex = selectedTabIndex,
+                        selectedTab = selectedTab,
+                        tabs = tabs,
                         onTabSelected = {
                             coroutineScope.launch {
                                 onTabSelected(it)
@@ -97,28 +102,25 @@ fun HomeScaffold(
 
 @Composable
 fun TitleBar(
-    selectedTabIndex: Int,
-    onTabSelected: (Int) -> Unit
+    selectedTab: Tab,
+    tabs: List<Tab>,
+    onTabSelected: (Tab) -> Unit
 ) {
-    val tabList = listOf(
-        R.string.channels,
-        R.string.your_apps
-    )
-    val tabRowWidth = (tabList.size * 160).dp
+    val tabRowWidth = (tabs.size * 160).dp
 
     TabRow(
         modifier = Modifier.requiredWidth(tabRowWidth),
         indicator = {},
         divider = {},
-        selectedTabIndex = selectedTabIndex,
+        selectedTabIndex = tabs.indexOf(selectedTab),
         containerColor = MaterialTheme.colorScheme.surface
     ) {
-        tabList.forEachIndexed { index, tabTitle ->
+        tabs.forEach { tab ->
             TabItem(
-                title = stringResource(id = tabTitle),
-                selected = selectedTabIndex == index,
+                title = tab.options.title,
+                selected = selectedTab == tab,
                 onTabSelected = {
-                    onTabSelected(index)
+                    onTabSelected(tab)
                 }
             )
         }
@@ -178,6 +180,6 @@ fun TabItem(
 @Composable
 fun DefaultPreview() {
     AppTheme {
-        TitleBar(0) {}
+        TitleBar(Channels, listOf(Channels, Apps)) {}
     }
 }

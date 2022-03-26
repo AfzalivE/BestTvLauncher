@@ -17,24 +17,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.tvprovider.media.tv.BasePreviewProgram
 import androidx.tvprovider.media.tv.PreviewChannel
 import androidx.tvprovider.media.tv.PreviewProgram
 import androidx.tvprovider.media.tv.WatchNextProgram
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
+import com.afzaln.besttvlauncher.ui.ItemDetails
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.ui.apps.dpadFocusable
-import com.afzaln.besttvlauncher.ui.destinations.ItemDetailsScreenDestination
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 import com.afzaln.besttvlauncher.utils.locatorViewModel
 import com.afzaln.besttvlauncher.utils.posterAspectRatio
-import com.ramcosta.composedestinations.navigation.navigateTo
 
 @Composable
-fun ChannelsScreen(navController: NavController) {
+fun ChannelsScreen() {
     val viewModel: HomeViewModel = locatorViewModel()
     val programList by viewModel.programsByChannel.observeAsState(emptyMap())
     val watchNextList by viewModel.watchNextChannel.observeAsState(emptyList())
@@ -43,8 +41,10 @@ fun ChannelsScreen(navController: NavController) {
         viewModel.loadData()
     })
 
+    val navigator = LocalNavigator.currentOrThrow.parent!!
+
     ChannelsScreenContent(programList, watchNextList) { channelId, programId ->
-        navController.navigateTo(ItemDetailsScreenDestination(channelId, programId))
+        navigator.push(ItemDetails(channelId = channelId, programId = programId))
     }
 }
 
@@ -56,6 +56,7 @@ private fun ChannelsScreenContent(
 ) {
     Column(
         modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 48.dp)
             .padding(top = 27.dp, bottom = 27.dp)
     ) {
@@ -63,7 +64,6 @@ private fun ChannelsScreenContent(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChannelList(
     programMap: Map<PreviewChannel, List<PreviewProgram>>,
