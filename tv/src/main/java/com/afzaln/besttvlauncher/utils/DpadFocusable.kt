@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 
 fun Modifier.dpadFocusable(
-    unfocusedBorderWidth: Dp = 2.dp,
+    unfocusedBorderWidth: Dp = 0.dp,
     focusedBorderWidth: Dp = 2.dp,
     unfocusedBorderColor: Color = Color.Black,
     focusedBorderColor: Color = Color.White,
