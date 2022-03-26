@@ -18,3 +18,11 @@
 - Fix app needing restart after TV listings permission is granted
 - Cache channel and program data in memory
 - Update Coil to 2.0.0-rc01, significant different in load times! 🎉 
+
+# March 19th 2022
+- Fix crash when opening Item Details screen for some movies 🐛
+- Use Material 2 TopAppBar instead of M3 because M3 doesn't support TabRow in title
+
+# March 26th 2022
+- Switch navigation to Voyager. Better tabs when content scrolls on the main axis (horizontally)
+- Add colored shadows according to thumbnail's vibrant swatch using Palette
