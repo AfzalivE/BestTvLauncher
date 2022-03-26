@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
@@ -40,6 +41,7 @@ import com.afzaln.besttvlauncher.R
 import com.afzaln.besttvlauncher.data.AppInfo
 import com.afzaln.besttvlauncher.data.getLaunchIntent
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
+import com.afzaln.besttvlauncher.utils.dpadFocusable
 import com.afzaln.besttvlauncher.utils.locatorViewModel
 import logcat.logcat
 
@@ -69,18 +71,12 @@ fun AppList(appList: List<AppInfo>) {
             repeatList += appList
         }
 
-        itemsIndexed(items = repeatList,
-            span = { index, item ->
-                GridItemSpan(1)
-            }) { index, appInfo ->
+        items(items = repeatList,
+            span = { GridItemSpan(1) }) { appInfo ->
             AppCard(
                 appInfo,
                 modifier = Modifier.bringIntoViewRequester(relocationRequester),
-                onFocus = {
-                    val offset =
-                        (gridState.layoutInfo.viewportEndOffset - gridState.layoutInfo.viewportStartOffset) / 2
-                    logcat { "$index is focused, item height is $offset" }
-                }
+                onFocus = {}
             )
         }
     }
@@ -106,7 +102,7 @@ fun AppCard(
             }
             .dpadFocusable(
                 unfocusedBorderColor = MaterialTheme.colorScheme.background,
-                onFocus = onFocus
+                onFocus = { onFocus() }
             )
             .clickable {
                 val intent = appInfo.getLaunchIntent(context)
@@ -149,50 +145,4 @@ fun DefaultAppCard() {
             }
         )
     }
-}
-
-fun Modifier.dpadFocusable(
-    unfocusedBorderWidth: Dp = 2.dp,
-    focusedBorderWidth: Dp = 2.dp,
-    unfocusedBorderColor: Color = Color.Black,
-    focusedBorderColor: Color = Color.White,
-    onFocus: () -> Unit
-) = composed {
-    val boxInteractionSource = remember { MutableInteractionSource() }
-    val isItemFocused by boxInteractionSource.collectIsFocusedAsState()
-
-    val animatedBorderWidth by animateDpAsState(
-        targetValue = if (isItemFocused) focusedBorderWidth else unfocusedBorderWidth
-    )
-
-    val infiniteTransition = rememberInfiniteTransition()
-    val animatedFocusedBorder by infiniteTransition.animateColor(
-        initialValue = focusedBorderColor.copy(alpha = 0.5f),
-        targetValue = focusedBorderColor,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1500),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-
-    val animatedBorderColor by animateColorAsState(
-        targetValue = if (isItemFocused) animatedFocusedBorder else unfocusedBorderColor
-    )
-
-    val animatedScale by animateFloatAsState(
-        targetValue = if (isItemFocused) 1.1f else 1f
-    )
-
-    // if (isItemFocused) {
-    //     onFocus()
-    // }
-
-    this
-        .focusable(interactionSource = boxInteractionSource)
-        .scale(animatedScale)
-        .border(
-            width = animatedBorderWidth,
-            color = animatedBorderColor,
-            shape = AppTheme.cardShape
-        )
 }

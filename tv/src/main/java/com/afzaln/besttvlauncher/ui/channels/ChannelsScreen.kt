@@ -1,6 +1,8 @@
 package com.afzaln.besttvlauncher.ui.channels
 
 import android.content.res.Configuration
+import android.graphics.drawable.Drawable
+import android.os.Build
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
@@ -13,10 +15,14 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.toColor
+import androidx.palette.graphics.Palette
 import androidx.tvprovider.media.tv.BasePreviewProgram
 import androidx.tvprovider.media.tv.PreviewChannel
 import androidx.tvprovider.media.tv.PreviewProgram
@@ -24,18 +30,22 @@ import androidx.tvprovider.media.tv.WatchNextProgram
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
 import com.afzaln.besttvlauncher.ui.ItemDetails
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
-import com.afzaln.besttvlauncher.ui.apps.dpadFocusable
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
-import com.afzaln.besttvlauncher.utils.locatorViewModel
-import com.afzaln.besttvlauncher.utils.posterAspectRatio
+import com.afzaln.besttvlauncher.utils.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun ChannelsScreen() {
     val viewModel: HomeViewModel = locatorViewModel()
     val programList by viewModel.programsByChannel.observeAsState(emptyMap())
     val watchNextList by viewModel.watchNextChannel.observeAsState(emptyList())
+    val materialBackgroundColor = MaterialTheme.colorScheme.background
+    val backgroundColor by viewModel.backgroundColor.observeAsState(materialBackgroundColor)
 
     LaunchedEffect(key1 = Unit, block = {
         viewModel.loadData()
@@ -43,7 +53,14 @@ fun ChannelsScreen() {
 
     val navigator = LocalNavigator.currentOrThrow.parent!!
 
-    ChannelsScreenContent(programList, watchNextList) { channelId, programId ->
+    ChannelsScreenContent(
+        programList = programList,
+        watchNextList = watchNextList,
+        backgroundColor = backgroundColor,
+        onCardFocus = { palette ->
+            viewModel.palette.value = palette
+        }
+    ) { channelId, programId ->
         navigator.push(ItemDetails(channelId = channelId, programId = programId))
     }
 }
@@ -52,15 +69,17 @@ fun ChannelsScreen() {
 private fun ChannelsScreenContent(
     programList: Map<PreviewChannel, List<PreviewProgram>>,
     watchNextList: List<WatchNextProgram>,
+    backgroundColor: Color = MaterialTheme.colorScheme.background,
+    onCardFocus: (Palette) -> Unit,
     onProgramClicked: (Long, Long) -> Unit
 ) {
     Column(
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
+            .background(backgroundColor)
             .padding(horizontal = 48.dp)
             .padding(top = 27.dp, bottom = 27.dp)
     ) {
-        ChannelList(programList, watchNextList, onProgramClicked)
+        ChannelList(programList, watchNextList, onCardFocus, onProgramClicked)
     }
 }
 
@@ -68,26 +87,38 @@ private fun ChannelsScreenContent(
 fun ChannelList(
     programMap: Map<PreviewChannel, List<PreviewProgram>>,
     watchNextList: List<WatchNextProgram>,
+    onCardFocus: (Palette) -> Unit,
     onProgramClicked: (Long, Long) -> Unit
 ) {
     val channels = programMap.keys.toList()
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         channels.forEach { channel ->
-            ProgramInChannelRow(channel, programMap[channel] ?: emptyList(), onProgramClicked)
+            ProgramInChannelRow(
+                channel = channel,
+                programs = programMap[channel] ?: emptyList(),
+                onCardFocus = onCardFocus,
+                onProgramClicked = onProgramClicked
+            )
         }
-        WatchNextRow(watchNextList)
+        WatchNextRow(watchNextList, onCardFocus)
     }
 }
 
 @Composable
-fun WatchNextRow(programs: List<WatchNextProgram>) {
-    CardRow(title = "Watch Next", programs = programs, onClick = {})
+fun WatchNextRow(programs: List<WatchNextProgram>, onCardFocus: (Palette) -> Unit) {
+    CardRow(
+        title = "Watch Next",
+        programs = programs,
+        onClick = {},
+        onCardFocus = onCardFocus
+    )
 }
 
 @Composable
 fun ProgramInChannelRow(
     channel: PreviewChannel,
     programs: List<PreviewProgram>,
+    onCardFocus: (Palette) -> Unit,
     onProgramClicked: (Long, Long) -> Unit
 ) {
     if (programs.isEmpty()) return
@@ -104,7 +135,8 @@ fun ProgramInChannelRow(
             // if (intent != null) {
             //     context.startActivity(intent)
             // }
-        }
+        },
+        onCardFocus = onCardFocus
     )
 }
 
@@ -112,7 +144,8 @@ fun ProgramInChannelRow(
 fun CardRow(
     title: String,
     programs: List<BasePreviewProgram>,
-    onClick: (programId: Long) -> Unit
+    onClick: (programId: Long) -> Unit,
+    onCardFocus: (Palette) -> Unit
 ) {
     if (programs.isEmpty()) return
 
@@ -126,9 +159,11 @@ fun CardRow(
         )
         Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
             programs.forEach { program ->
-                ProgramCard(program, onFocus = {}, onClick = {
-                    onClick(program.id)
-                })
+                ProgramCard(
+                    program,
+                    onFocus = onCardFocus,
+                    onClick = { onClick(program.id) },
+                )
             }
         }
     }
@@ -137,10 +172,12 @@ fun CardRow(
 @Composable
 private fun ProgramCard(
     program: BasePreviewProgram,
-    onFocus: () -> Unit,
-    onClick: () -> Unit
+    onFocus: (Palette) -> Unit,
+    onClick: () -> Unit,
 ) {
     var isClicked by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    var palette by remember { mutableStateOf(emptyPalette()) }
 
     val animatedScale by animateFloatAsState(
         animationSpec = tween(1000),
@@ -162,8 +199,13 @@ private fun ProgramCard(
                 .requiredHeight(120.dp)
                 .aspectRatio(program.posterAspectRatio())
                 .dpadFocusable(
+                    shadowColor = Color(palette.vibrantSwatch?.rgb ?: 0),
                     unfocusedBorderColor = MaterialTheme.colorScheme.background,
-                    onFocus = onFocus
+                    onFocus = {
+                        if (it.isFocused) {
+                            onFocus(palette)
+                        }
+                    }
                 )
                 .clickable {
                     isClicked = true
@@ -173,7 +215,14 @@ private fun ProgramCard(
                 model = program.posterArtUri,
                 contentDescription = "Thumbnail for ${program.title}",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                onState = { state ->
+                    if (state is AsyncImagePainter.State.Success) {
+                        coroutineScope.launch {
+                            palette = createPalette(state.result.drawable)
+                        }
+                    }
+                }
             )
         }
         Text(
@@ -188,5 +237,9 @@ private fun ProgramCard(
 @Preview(uiMode = Configuration.UI_MODE_TYPE_TELEVISION)
 @Composable
 fun PreviewChannel() {
-    ChannelsScreenContent(emptyMap(), emptyList()) { _, _ -> }
+    ChannelsScreenContent(
+        emptyMap(),
+        emptyList(),
+        onCardFocus = {}
+    ) { _, _ -> }
 }

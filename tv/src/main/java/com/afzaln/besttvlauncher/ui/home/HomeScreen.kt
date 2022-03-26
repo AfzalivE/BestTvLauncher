@@ -2,7 +2,10 @@ package com.afzaln.besttvlauncher.ui.home
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -11,10 +14,15 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.transitions.ScreenTransition
 import com.afzaln.besttvlauncher.ui.Apps
 import com.afzaln.besttvlauncher.ui.Channels
+import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
+import com.afzaln.besttvlauncher.utils.locatorViewModel
 
 @Composable
 fun HomeScreen() {
     val tabs = listOf(Channels, Apps)
+    val viewModel: HomeViewModel = locatorViewModel()
+    val materialBackgroundColor = MaterialTheme.colorScheme.background
+    val backgroundColor by viewModel.backgroundColor.observeAsState(materialBackgroundColor)
 
     TabNavigator(tab = Channels) {
         val tabNavigator = LocalTabNavigator.current
@@ -23,6 +31,7 @@ fun HomeScreen() {
         HomeScaffold(
             selectedTab = tabNavigator.current,
             tabs = tabs,
+            containerColor = backgroundColor,
             onTabSelected = {
                 tabNavigator.current = it
             }

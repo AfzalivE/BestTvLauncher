@@ -18,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +37,7 @@ import kotlinx.coroutines.launch
 fun HomeScaffold(
     selectedTab: Tab,
     tabs: List<Tab>,
+    containerColor: Color,
     onTabSelected: (Tab) -> Unit,
     content: @Composable () -> Unit,
 ) {
@@ -45,10 +47,11 @@ fun HomeScaffold(
     val statusBarManager = context.getSystemService(StatusBarManager::class.java)
 
     Scaffold(
+        containerColor = containerColor,
         topBar = {
             TopAppBar(
                 elevation = 0.dp,
-                backgroundColor = MaterialTheme.colorScheme.surface,
+                backgroundColor = containerColor,
                 title = {
                     TitleBar(
                         selectedTab = selectedTab,
@@ -113,7 +116,7 @@ fun TitleBar(
         indicator = {},
         divider = {},
         selectedTabIndex = tabs.indexOf(selectedTab),
-        containerColor = MaterialTheme.colorScheme.surface
+        containerColor = Color.Transparent
     ) {
         tabs.forEach { tab ->
             TabItem(
@@ -142,7 +145,7 @@ fun TabItem(
         targetValue = if (isFocusedOrSelected) {
             MaterialTheme.colorScheme.inverseSurface
         } else {
-            MaterialTheme.colorScheme.surface
+            Color.Transparent
         }
     )
 

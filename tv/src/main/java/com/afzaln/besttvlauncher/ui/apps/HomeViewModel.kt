@@ -1,10 +1,8 @@
 package com.afzaln.besttvlauncher.ui.apps
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.*
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.tvprovider.media.tv.PreviewChannel
-import androidx.tvprovider.media.tv.PreviewProgram
-import androidx.tvprovider.media.tv.TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_16_9
+import androidx.palette.graphics.Palette
 import com.afzaln.besttvlauncher.data.AppInfoRepository
 import com.afzaln.besttvlauncher.data.ChannelRepository
 import com.afzaln.besttvlauncher.data.ProgramRepository
@@ -17,12 +15,18 @@ class HomeViewModel(
     private val programRepository: ProgramRepository,
     private val userPreferences: UserPreferences
 ) : ViewModel() {
-
     val appInfoList = appInfoRepo.apps.asLiveData()
-
     val wrappedChannelList = channelRepository.channels.asLiveData()
-
     val programsByChannel = channelRepository.channelProgramMap.asLiveData()
+
+    val palette = MutableLiveData<Palette>()
+    val backgroundColor = MediatorLiveData<Color>().apply {
+        addSource(palette) { palette ->
+            palette.vibrantSwatch?.rgb?.let {
+                value = Color(it).copy(0.05f)
+            }
+        }
+    }
 
     fun loadData() {
         viewModelScope.launch {
