@@ -1,5 +1,15 @@
 {
   "extends": [
     "config:base"
+  ],
+  "labels": ["dependencies"],
+  "separateMajorMinor": "false",
+  "packageRules": [
+    {
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["major", "minor", "patch", "pin", "digest", "lockFileMaintenance", "rollback", "bump"],
+      "groupName": "dependencies",
+      "semanticCommitType": "fix"
+    }
   ]
 }
