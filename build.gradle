@@ -1,7 +1,7 @@
 buildscript {
     ext {
         compose_version = '1.2.0-alpha08'
-        voyager_version = '1.0.0-beta16'
+        voyager_version = '1.0.0-rc02'
     }
 }
 
