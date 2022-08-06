@@ -3,9 +3,11 @@ package com.afzaln.besttvlauncher.data
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.drawable.BitmapDrawable
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 
 class AppInfoRepository(private val context: Context) {
     private val packageManager: PackageManager = context.packageManager
@@ -18,14 +20,14 @@ class AppInfoRepository(private val context: Context) {
             cached = newList
             emit(cached)
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
-    private fun loadAppInfo(): List<AppInfo> {
+    private suspend fun loadAppInfo(): List<AppInfo> = withContext(Dispatchers.IO) {
         val intent = Intent(Intent.ACTION_MAIN, null).apply {
             addCategory(Intent.CATEGORY_LEANBACK_LAUNCHER)
         }
 
-        return packageManager.queryIntentActivities(intent, 0)
+        packageManager.queryIntentActivities(intent, 0)
             .filter { it.activityInfo.packageName != context.packageName }
             .filter { packageManager.getLeanbackLaunchIntentForPackage(it.activityInfo.packageName) != null }
             // Exclude Timers & Clock on Sony which has two Activity definitions.
