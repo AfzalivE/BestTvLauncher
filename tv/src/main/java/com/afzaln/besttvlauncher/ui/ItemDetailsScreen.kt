@@ -33,6 +33,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintLayoutScope
 import androidx.tvprovider.media.tv.BasePreviewProgram
 import androidx.tvprovider.media.tv.PreviewProgram
+import androidx.tvprovider.media.tv.Program
 import coil.compose.AsyncImage
 import com.afzaln.besttvlauncher.R
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
@@ -221,11 +222,13 @@ fun MetadataRow(previewProgram: BasePreviewProgram) {
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(
-            text = previewProgram.genre,
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f)
-        )
+        previewProgram.genre?.let {
+            Text(
+                text = previewProgram.genre,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f)
+            )
+        }
 
         previewProgram.releaseDate?.let { releaseDate ->
             Text(
