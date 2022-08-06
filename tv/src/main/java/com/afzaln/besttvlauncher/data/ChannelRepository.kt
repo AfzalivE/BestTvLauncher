@@ -25,10 +25,8 @@ class ChannelRepository(context: Context) {
     suspend fun refreshData() {
         loadChannels()
 
-        channels.collect { channelList ->
-            _cachedMap.update { map ->
-                return@update loadPrograms(channelList, map)
-            }
+        _cachedMap.update { map ->
+            return@update loadPrograms(channels.value, map)
         }
     }
 

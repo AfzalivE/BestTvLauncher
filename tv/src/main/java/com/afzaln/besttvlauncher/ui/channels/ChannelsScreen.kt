@@ -36,8 +36,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ChannelsScreen() {
     val viewModel: HomeViewModel = locatorViewModel()
-    val programList by viewModel.programsByChannel.observeAsState(emptyMap())
-    val watchNextList by viewModel.watchNextChannel.observeAsState(emptyList())
+    val state by viewModel.state.observeAsState(initial = HomeViewModel.State.Loading)
     val materialBackgroundColor = MaterialTheme.colorScheme.background
     val backgroundColor by viewModel.backgroundColor.observeAsState(materialBackgroundColor)
 
@@ -47,15 +46,23 @@ fun ChannelsScreen() {
 
     val navigator = LocalNavigator.currentOrThrow.parent!!
 
-    ChannelsScreenContent(
-        programList = programList,
-        watchNextList = watchNextList,
-        backgroundColor = backgroundColor,
-        onCardFocus = { palette ->
-            viewModel.palette.value = palette
+    when (state) {
+        is HomeViewModel.State.Loaded -> {
+            val loaded = state as HomeViewModel.State.Loaded
+            ChannelsScreenContent(
+                programList = loaded.programsByChannel,
+                watchNextList = loaded.watchNextPrograms,
+                backgroundColor = backgroundColor,
+                onCardFocus = { palette ->
+                    viewModel.palette.value = palette
+                }
+            ) { channelId, programId ->
+                navigator.push(ItemDetails(channelId = channelId, programId = programId))
+            }
         }
-    ) { channelId, programId ->
-        navigator.push(ItemDetails(channelId = channelId, programId = programId))
+        HomeViewModel.State.Loading -> {
+            Box(modifier = Modifier.fillMaxSize().background(Color.White))
+        }
     }
 }
 
@@ -212,9 +219,9 @@ private fun ProgramCard(
                 modifier = Modifier.fillMaxSize(),
                 onState = { state ->
                     if (state is AsyncImagePainter.State.Success) {
-                        coroutineScope.launch {
-                            palette = createPalette(state.result.drawable)
-                        }
+//                        coroutineScope.launch {
+//                            palette = createPalette(state.result.drawable)
+//                        }
                     }
                 }
             )
