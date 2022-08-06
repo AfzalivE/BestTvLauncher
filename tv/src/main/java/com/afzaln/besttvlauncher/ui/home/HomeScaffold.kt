@@ -23,10 +23,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.tab.Tab
 import com.afzaln.besttvlauncher.R
 import com.afzaln.besttvlauncher.ui.Apps
 import com.afzaln.besttvlauncher.ui.Channels
+import com.afzaln.besttvlauncher.ui.Tab
 import com.afzaln.besttvlauncher.ui.settings.SettingsActivity
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 import com.afzaln.besttvlauncher.utils.expand
@@ -120,7 +120,7 @@ fun TitleBar(
     ) {
         tabs.forEach { tab ->
             TabItem(
-                title = tab.options.title,
+                title = tab.title,
                 selected = selectedTab == tab,
                 onTabSelected = {
                     onTabSelected(tab)

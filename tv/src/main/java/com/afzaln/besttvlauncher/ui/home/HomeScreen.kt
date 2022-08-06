@@ -19,49 +19,49 @@ import com.afzaln.besttvlauncher.utils.locatorViewModel
 
 @Composable
 fun HomeScreen() {
-    val tabs = listOf(Channels, Apps)
-    val viewModel: HomeViewModel = locatorViewModel()
-    val materialBackgroundColor = MaterialTheme.colorScheme.background
-    val backgroundColor by viewModel.backgroundColor.observeAsState(materialBackgroundColor)
-
-    TabNavigator(tab = Channels) {
-        val tabNavigator = LocalTabNavigator.current
-        val navigator = LocalNavigator.currentOrThrow
-
-        HomeScaffold(
-            selectedTab = tabNavigator.current,
-            tabs = tabs,
-            containerColor = backgroundColor,
-            onTabSelected = {
-                tabNavigator.current = it
-            }
-        ) {
-            TabTransition(navigator)
-        }
-    }
+//    val tabs = listOf(Channels, Apps)
+//    val viewModel: HomeViewModel = locatorViewModel()
+//    val materialBackgroundColor = MaterialTheme.colorScheme.background
+//    val backgroundColor by viewModel.backgroundColor.observeAsState(materialBackgroundColor)
+//
+//    TabNavigator(tab = Channels) {
+//        val tabNavigator = LocalTabNavigator.current
+//        val navigator = LocalNavigator.currentOrThrow
+//
+//        HomeScaffold(
+//            selectedTab = tabNavigator.current,
+//            tabs = tabs,
+//            containerColor = backgroundColor,
+//            onTabSelected = {
+//                tabNavigator.current = it
+//            }
+//        ) {
+//            TabTransition(navigator)
+//        }
+//    }
 }
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TabTransition(navigator: Navigator) {
-    ScreenTransition(navigator = navigator, transition = {
-        if (Channels isTransitioningTo Apps) {
-            fadeIn(tween(duration)) +
-                    slideInHorizontally(tween(duration), initialOffsetX = { xOffset }) with
-                    fadeOut(tween(duration)) +
-                    slideOutHorizontally(tween(duration), targetOffsetX = { -xOffset })
-        } else if (Apps isTransitioningTo Channels) {
-            fadeIn(tween(duration)) +
-                    slideInHorizontally(tween(duration), initialOffsetX = { -xOffset }) with
-                    fadeOut(tween(duration)) +
-                    slideOutHorizontally(
-                        tween(duration),
-                        targetOffsetX = { xOffset }
-                    )
-        } else {
-            fadeIn() with fadeOut()
-        }
-    })
+//    ScreenTransition(navigator = navigator, transition = {
+//        if (Channels isTransitioningTo Apps) {
+//            fadeIn(tween(duration)) +
+//                    slideInHorizontally(tween(duration), initialOffsetX = { xOffset }) with
+//                    fadeOut(tween(duration)) +
+//                    slideOutHorizontally(tween(duration), targetOffsetX = { -xOffset })
+//        } else if (Apps isTransitioningTo Channels) {
+//            fadeIn(tween(duration)) +
+//                    slideInHorizontally(tween(duration), initialOffsetX = { -xOffset }) with
+//                    fadeOut(tween(duration)) +
+//                    slideOutHorizontally(
+//                        tween(duration),
+//                        targetOffsetX = { xOffset }
+//                    )
+//        } else {
+//            fadeIn() with fadeOut()
+//        }
+//    })
 }
 
 const val duration = 1000

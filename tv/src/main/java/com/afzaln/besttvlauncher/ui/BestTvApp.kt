@@ -1,24 +1,17 @@
 package com.afzaln.besttvlauncher.ui
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import cafe.adriel.voyager.navigator.tab.Tab
-import cafe.adriel.voyager.navigator.tab.TabOptions
-import cafe.adriel.voyager.transitions.FadeTransition
 import com.afzaln.besttvlauncher.R
-import com.afzaln.besttvlauncher.ui.apps.AppsScreen
-import com.afzaln.besttvlauncher.ui.channels.ChannelsScreen
 import com.afzaln.besttvlauncher.ui.home.HomeScreen
+import com.afzaln.besttvlauncher.ui.home.NewHomeScreen
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 
 @Composable
@@ -28,9 +21,18 @@ fun BestTvApp() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            Navigator(screen = Home)
+            NewHomeScreen()
         }
     }
+}
+
+interface Destination {
+    val route: String
+}
+
+interface Tab: Destination {
+    @get:Composable
+    val title: String
 }
 
 object Home : Screen {
@@ -39,34 +41,31 @@ object Home : Screen {
 }
 
 object Channels : Tab {
-    override val options: TabOptions
-        @Composable
-        get() {
-            val title = stringResource(id = R.string.channels)
-            return remember {
-                TabOptions(0u, title)
-            }
-        }
+    override val route = "channels"
 
-    @Composable
-    override fun Content() = ChannelsScreen()
+    override val title: String
+        @Composable
+        get() = stringResource(id = R.string.channels)
 }
 
 object Apps : Tab {
-    override val options: TabOptions
+    override val route = "apps"
+
+    override val title: String
         @Composable
         get() {
-            val title = stringResource(id = R.string.your_apps)
-            return remember {
-                TabOptions(1u, title)
-            }
+            return stringResource(id = R.string.your_apps)
         }
-
-    @Composable
-    override fun Content() = AppsScreen()
 }
 
-class ItemDetails(private val channelId: Long, private val programId: Long) : Screen {
-    @Composable
-    override fun Content() = ItemDetailsScreen(channelId, programId)
+object ItemDetails : Destination {
+    override val route: String = "item_details"
+    const val channelIdArg = "channel_id"
+    const val programIdArg = "program_id"
+
+    val routeWithArgs = "$route/{$channelIdArg}/{$programIdArg}"
+    val arguments = listOf(
+        navArgument(channelIdArg) { type = NavType.LongType },
+        navArgument(programIdArg) { type = NavType.LongType }
+    )
 }

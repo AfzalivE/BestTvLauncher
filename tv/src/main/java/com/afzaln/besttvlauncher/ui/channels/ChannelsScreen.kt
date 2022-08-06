@@ -23,18 +23,17 @@ import androidx.tvprovider.media.tv.BasePreviewProgram
 import androidx.tvprovider.media.tv.PreviewChannel
 import androidx.tvprovider.media.tv.PreviewProgram
 import androidx.tvprovider.media.tv.WatchNextProgram
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
-import com.afzaln.besttvlauncher.ui.ItemDetails
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
-import com.afzaln.besttvlauncher.utils.*
-import kotlinx.coroutines.launch
+import com.afzaln.besttvlauncher.utils.dpadFocusable
+import com.afzaln.besttvlauncher.utils.emptyPalette
+import com.afzaln.besttvlauncher.utils.locatorViewModel
+import com.afzaln.besttvlauncher.utils.posterAspectRatio
 
 @Composable
-fun ChannelsScreen() {
+fun ChannelsScreen(onProgramClicked: (Long, Long) -> Unit) {
     val viewModel: HomeViewModel = locatorViewModel()
     val state by viewModel.state.observeAsState(initial = HomeViewModel.State.Loading)
     val materialBackgroundColor = MaterialTheme.colorScheme.background
@@ -44,21 +43,14 @@ fun ChannelsScreen() {
         viewModel.loadData()
     })
 
-    val navigator = LocalNavigator.currentOrThrow.parent!!
-
     when (state) {
         is HomeViewModel.State.Loaded -> {
             val loaded = state as HomeViewModel.State.Loaded
             ChannelsScreenContent(
-                programList = loaded.programsByChannel,
-                watchNextList = loaded.watchNextPrograms,
-                backgroundColor = backgroundColor,
-                onCardFocus = { palette ->
+                programList = loaded.programsByChannel, watchNextList = loaded.watchNextPrograms, backgroundColor = backgroundColor, onCardFocus = { palette ->
                     viewModel.palette.value = palette
-                }
-            ) { channelId, programId ->
-                navigator.push(ItemDetails(channelId = channelId, programId = programId))
-            }
+                },
+                onProgramClicked = onProgramClicked)
         }
         HomeViewModel.State.Loading -> {
             Box(modifier = Modifier.fillMaxSize().background(Color.White))
