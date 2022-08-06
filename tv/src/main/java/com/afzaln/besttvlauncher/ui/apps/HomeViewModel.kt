@@ -10,6 +10,7 @@ import com.afzaln.besttvlauncher.data.AppInfoRepository
 import com.afzaln.besttvlauncher.data.ChannelRepository
 import com.afzaln.besttvlauncher.data.ProgramRepository
 import com.afzaln.besttvlauncher.data.UserPreferences
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
@@ -35,6 +36,7 @@ class HomeViewModel(
     fun loadData() {
         viewModelScope.launch {
             state.value = State.Loading
+            delay(500)
             channelRepository.refreshData()
             state.value = State.Loaded(
                 channelRepository.channelProgramMap.value,

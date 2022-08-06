@@ -1,6 +1,7 @@
 package com.afzaln.besttvlauncher.ui.channels
 
 import android.content.res.Configuration
+import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
@@ -31,7 +32,11 @@ import com.afzaln.besttvlauncher.utils.dpadFocusable
 import com.afzaln.besttvlauncher.utils.emptyPalette
 import com.afzaln.besttvlauncher.utils.locatorViewModel
 import com.afzaln.besttvlauncher.utils.posterAspectRatio
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.fade
+import com.google.accompanist.placeholder.placeholder
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ChannelsScreen(onProgramClicked: (Long, Long) -> Unit) {
     val viewModel: HomeViewModel = locatorViewModel()
@@ -39,22 +44,87 @@ fun ChannelsScreen(onProgramClicked: (Long, Long) -> Unit) {
     val materialBackgroundColor = MaterialTheme.colorScheme.background
     val backgroundColor by viewModel.backgroundColor.observeAsState(materialBackgroundColor)
 
-    LaunchedEffect(key1 = Unit, block = {
+    LaunchedEffect(key1 = Unit) {
         viewModel.loadData()
-    })
+    }
 
-    when (state) {
-        is HomeViewModel.State.Loaded -> {
-            val loaded = state as HomeViewModel.State.Loaded
-            ChannelsScreenContent(
-                programList = loaded.programsByChannel, watchNextList = loaded.watchNextPrograms, backgroundColor = backgroundColor, onCardFocus = { palette ->
-                    viewModel.palette.value = palette
-                },
-                onProgramClicked = onProgramClicked)
+    AnimatedContent(targetState = state, transitionSpec = {
+        fadeIn(tween(250)) with fadeOut(tween(250))
+    }) { targetState ->
+        when (targetState) {
+            is HomeViewModel.State.Loaded -> {
+                ChannelsScreenContent(
+                    programList = targetState.programsByChannel,
+                    watchNextList = targetState.watchNextPrograms,
+                    backgroundColor = backgroundColor,
+                    onCardFocus = { palette ->
+                        viewModel.palette.value = palette
+                    },
+                    onProgramClicked = onProgramClicked
+                )
+            }
+            HomeViewModel.State.Loading -> {
+                LoadingChannelScreen()
+            }
         }
-        HomeViewModel.State.Loading -> {
-            Box(modifier = Modifier.fillMaxSize().background(Color.White))
+    }
+}
+
+@Composable
+fun LoadingChannelScreen() {
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        repeat(3) {
+            Row(
+                Modifier
+                    .padding(horizontal = 32.dp, vertical = 16.dp)
+                    .horizontalScroll(rememberScrollState())
+            ) {
+                repeat(10) {
+                    LoadingProgramCard()
+                }
+            }
         }
+    }
+}
+
+@Composable
+fun LoadingProgramCard() {
+    Column(
+        modifier = Modifier
+            .requiredWidth(120.dp)
+            .padding(horizontal = 8.dp, vertical = 16.dp)
+    ) {
+        Card(
+            shape = AppTheme.cardShape, modifier = Modifier
+                .requiredHeight(120.dp)
+                .placeholder(
+                    visible = true,
+                    color = Color.DarkGray,
+                    shape = AppTheme.cardShape,
+                    highlight = PlaceholderHighlight.fade(highlightColor = Color.Gray)
+                )
+        ) {
+            Box(modifier = Modifier.fillMaxSize())
+        }
+
+        Text(
+            "Empty text",
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier
+                .width(160.dp)
+                .requiredHeight(48.dp)
+                .padding(top = 16.dp)
+                .placeholder(
+                    visible = true,
+                    color = Color.DarkGray,
+                    shape = AppTheme.cardShape,
+                    highlight = PlaceholderHighlight.fade(highlightColor = Color.Gray)
+                )
+        )
     }
 }
 
