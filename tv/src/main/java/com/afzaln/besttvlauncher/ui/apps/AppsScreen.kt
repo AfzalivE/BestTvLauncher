@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
+import androidx.tv.foundation.lazy.grid.*
 import com.afzaln.besttvlauncher.R
 import com.afzaln.besttvlauncher.data.AppInfo
 import com.afzaln.besttvlauncher.data.getLaunchIntent
@@ -59,21 +60,21 @@ fun AppsScreen() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AppList(appList: List<AppInfo>) {
-    val gridState = rememberLazyGridState()
+    val gridState = rememberTvLazyGridState()
     val relocationRequester = remember { BringIntoViewRequester() }
 
-    LazyVerticalGrid(
+    TvLazyVerticalGrid(
         modifier = Modifier.background(MaterialTheme.colorScheme.background),
-        columns = GridCells.Fixed(6),
+        columns = TvGridCells.Fixed(6),
         state = gridState
     ) {
         val repeatList = mutableListOf<AppInfo>()
-        repeat(5) {
+        repeat(10) {
             repeatList += appList
         }
 
         items(items = repeatList,
-            span = { GridItemSpan(1) }) { appInfo ->
+            span = { TvGridItemSpan(1) }) { appInfo ->
             AppCard(
                 appInfo,
                 modifier = Modifier.bringIntoViewRequester(relocationRequester),

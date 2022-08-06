@@ -20,6 +20,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.palette.graphics.Palette
+import androidx.tv.foundation.PivotOffsets
+import androidx.tv.foundation.lazy.list.TvLazyColumn
+import androidx.tv.foundation.lazy.list.TvLazyRow
+import androidx.tv.foundation.lazy.list.items
 import androidx.tvprovider.media.tv.BasePreviewProgram
 import androidx.tvprovider.media.tv.PreviewChannel
 import androidx.tvprovider.media.tv.PreviewProgram
@@ -139,8 +143,6 @@ private fun ChannelsScreenContent(
     Column(
         modifier = Modifier
             .background(backgroundColor)
-            .padding(horizontal = 48.dp)
-            .padding(top = 27.dp, bottom = 27.dp)
     ) {
         ChannelList(programList, watchNextList, onCardFocus, onProgramClicked)
     }
@@ -154,8 +156,13 @@ fun ChannelList(
     onProgramClicked: (Long, Long) -> Unit
 ) {
     val channels = programMap.keys.toList()
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        channels.forEach { channel ->
+    TvLazyColumn(
+        contentPadding = PaddingValues(vertical = 27.dp),
+        pivotOffsets = PivotOffsets(
+            parentFraction = 0.15f,
+        )
+    ) {
+        items(channels) { channel ->
             ProgramInChannelRow(
                 channel = channel,
                 programs = programMap[channel] ?: emptyList(),
@@ -163,7 +170,9 @@ fun ChannelList(
                 onProgramClicked = onProgramClicked
             )
         }
-        WatchNextRow(watchNextList, onCardFocus)
+        item {
+            WatchNextRow(watchNextList, onCardFocus)
+        }
     }
 }
 
@@ -173,7 +182,8 @@ fun WatchNextRow(programs: List<WatchNextProgram>, onCardFocus: (Palette) -> Uni
         title = "Watch Next",
         programs = programs,
         onClick = {},
-        onCardFocus = onCardFocus
+        onCardFocus = onCardFocus,
+        contentPadding = PaddingValues(horizontal = 48.dp)
     )
 }
 
@@ -199,13 +209,15 @@ fun ProgramInChannelRow(
             //     context.startActivity(intent)
             // }
         },
-        onCardFocus = onCardFocus
+        onCardFocus = onCardFocus,
+        contentPadding = PaddingValues(horizontal = 48.dp)
     )
 }
 
 @Composable
 fun CardRow(
     title: String,
+    contentPadding: PaddingValues,
     programs: List<BasePreviewProgram>,
     onClick: (programId: Long) -> Unit,
     onCardFocus: (Palette) -> Unit
@@ -218,10 +230,16 @@ fun CardRow(
         Text(
             text = title,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(contentPadding)
         )
-        Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
-            programs.forEach { program ->
+        TvLazyRow(
+            contentPadding = contentPadding,
+            pivotOffsets = PivotOffsets(
+                parentFraction = 0.05f,
+            )
+        ) {
+            items(programs) { program ->
                 ProgramCard(
                     program,
                     onFocus = onCardFocus,
