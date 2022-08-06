@@ -26,3 +26,9 @@
 # March 26th 2022
 - Switch navigation to Voyager. Better tabs when content scrolls on the main axis (horizontally)
 - Add colored shadows according to thumbnail's vibrant swatch using Palette
+
+# August 6th 2022
+- Switch navigation to Androidx and use AnimatedNavHost for transitions
+- Add shimmer loading state to Channels screen
+- Use TvLazyColumn/Row/Grid for Lazy components for better focus
+- Move some loading off main thread
