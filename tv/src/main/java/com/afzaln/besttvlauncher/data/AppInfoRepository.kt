@@ -34,7 +34,7 @@ class AppInfoRepository(private val context: Context) {
                 AppInfo(
                     app.loadLabel(packageManager),
                     app.activityInfo.packageName,
-                    app.activityInfo.loadBanner(packageManager) as BitmapDrawable
+                    app.activityInfo.loadBanner(packageManager)
                 )
             }
     }

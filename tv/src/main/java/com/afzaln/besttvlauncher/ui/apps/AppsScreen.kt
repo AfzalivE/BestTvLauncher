@@ -37,6 +37,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
 import com.afzaln.besttvlauncher.R
 import com.afzaln.besttvlauncher.data.AppInfo
 import com.afzaln.besttvlauncher.data.getLaunchIntent
@@ -114,7 +115,7 @@ fun AppCard(
     ) {
         Card(shape = AppTheme.cardShape) {
             Image(
-                bitmap = appInfo.banner.bitmap.asImageBitmap(),
+                bitmap = appInfo.banner.toBitmap().asImageBitmap(),
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier.fillMaxSize(),
                 contentDescription = "Icon for ${appInfo.label}"
