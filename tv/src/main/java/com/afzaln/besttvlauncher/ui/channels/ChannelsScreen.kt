@@ -3,6 +3,7 @@ package com.afzaln.besttvlauncher.ui.channels
 import android.content.res.Configuration
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,27 +15,32 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.palette.graphics.Palette
 import androidx.tv.foundation.PivotOffsets
 import androidx.tv.foundation.lazy.list.TvLazyColumn
 import androidx.tv.foundation.lazy.list.TvLazyRow
 import androidx.tv.foundation.lazy.list.items
-import androidx.tvprovider.media.tv.BasePreviewProgram
-import androidx.tvprovider.media.tv.PreviewChannel
-import androidx.tvprovider.media.tv.PreviewProgram
-import androidx.tvprovider.media.tv.WatchNextProgram
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
+import com.afzaln.besttvlauncher.data.models.Channel
+import com.afzaln.besttvlauncher.data.models.Program
+import com.afzaln.besttvlauncher.data.models.posterAspectRatio
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 import com.afzaln.besttvlauncher.utils.dpadFocusable
 import com.afzaln.besttvlauncher.utils.emptyPalette
-import com.afzaln.besttvlauncher.utils.posterAspectRatio
+import com.afzaln.besttvlauncher.utils.recomposeHighlighter
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -66,15 +72,14 @@ fun ChannelsScreen(state: HomeViewModel.State, onProgramClicked: (Long, Long) ->
 
 @Composable
 private fun ChannelsScreenContent(
-    programList: Map<PreviewChannel, List<PreviewProgram>>,
-    watchNextList: List<WatchNextProgram>,
+    programList: ImmutableMap<Channel, ImmutableList<Program>>,
+    watchNextList: ImmutableList<Program>,
     backgroundColor: Color = MaterialTheme.colorScheme.background,
     onCardFocus: (Palette) -> Unit,
     onProgramClicked: (Long, Long) -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .background(backgroundColor)
+        modifier = Modifier.background(backgroundColor)
     ) {
         ChannelList(programList, watchNextList, onCardFocus, onProgramClicked)
     }
@@ -82,8 +87,8 @@ private fun ChannelsScreenContent(
 
 @Composable
 fun ChannelList(
-    programMap: Map<PreviewChannel, List<PreviewProgram>>,
-    watchNextList: List<WatchNextProgram>,
+    programMap: ImmutableMap<Channel, ImmutableList<Program>>,
+    watchNextList: ImmutableList<Program>,
     onCardFocus: (Palette) -> Unit,
     onProgramClicked: (Long, Long) -> Unit
 ) {
@@ -97,7 +102,7 @@ fun ChannelList(
         items(channels) { channel ->
             ProgramInChannelRow(
                 channel = channel,
-                programs = programMap[channel] ?: emptyList(),
+                programs = programMap[channel] ?: persistentListOf(),
                 onCardFocus = onCardFocus,
                 onProgramClicked = onProgramClicked
             )
@@ -109,7 +114,7 @@ fun ChannelList(
 }
 
 @Composable
-fun WatchNextRow(programs: List<WatchNextProgram>, onCardFocus: (Palette) -> Unit) {
+fun WatchNextRow(programs: ImmutableList<Program>, onCardFocus: (Palette) -> Unit) {
     CardRow(
         title = "Watch Next",
         programs = programs,
@@ -121,8 +126,8 @@ fun WatchNextRow(programs: List<WatchNextProgram>, onCardFocus: (Palette) -> Uni
 
 @Composable
 fun ProgramInChannelRow(
-    channel: PreviewChannel,
-    programs: List<PreviewProgram>,
+    channel: Channel,
+    programs: ImmutableList<Program>,
     onCardFocus: (Palette) -> Unit,
     onProgramClicked: (Long, Long) -> Unit
 ) {
@@ -150,22 +155,28 @@ fun ProgramInChannelRow(
 fun CardRow(
     title: String,
     contentPadding: PaddingValues,
-    programs: List<BasePreviewProgram>,
+    programs: ImmutableList<Program>,
     onClick: (programId: Long) -> Unit,
     onCardFocus: (Palette) -> Unit
 ) {
     if (programs.isEmpty()) return
+    var hasFocus by remember { mutableStateOf(false) }
+
+    val animatedTitleSize by animateIntAsState(targetValue = if (hasFocus) 24 else 14)
 
     val context = LocalContext.current
 
     Column {
         Text(
             text = title,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium.copy(fontSize = animatedTitleSize.sp),
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(contentPadding)
         )
         TvLazyRow(
+            modifier = Modifier.onFocusChanged {
+                hasFocus = it.hasFocus
+            },
             contentPadding = contentPadding,
             pivotOffsets = PivotOffsets(
                 parentFraction = 0.05f,
@@ -184,7 +195,7 @@ fun CardRow(
 
 @Composable
 private fun ProgramCard(
-    program: BasePreviewProgram,
+    program: Program,
     onFocus: (Palette) -> Unit,
     onClick: () -> Unit,
 ) {
@@ -203,7 +214,8 @@ private fun ProgramCard(
     Column(
         modifier = Modifier
             .scale(animatedScale)
-            .padding(horizontal = 8.dp, vertical = 16.dp),
+            .padding(horizontal = 8.dp, vertical = 16.dp)
+            .recomposeHighlighter(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Card(
@@ -249,10 +261,10 @@ private fun ProgramCard(
 
 @Preview(uiMode = Configuration.UI_MODE_TYPE_TELEVISION)
 @Composable
-fun PreviewChannel() {
+fun Channel() {
     ChannelsScreenContent(
-        emptyMap(),
-        emptyList(),
+        persistentMapOf(),
+        persistentListOf(),
         onCardFocus = {}
     ) { _, _ -> }
 }

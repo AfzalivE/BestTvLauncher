@@ -24,10 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.tv.foundation.lazy.grid.*
 import com.afzaln.besttvlauncher.R
-import com.afzaln.besttvlauncher.data.AppInfo
-import com.afzaln.besttvlauncher.data.getLaunchIntent
+import com.afzaln.besttvlauncher.data.models.AppInfo
+import com.afzaln.besttvlauncher.data.models.getLaunchIntent
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 import com.afzaln.besttvlauncher.utils.dpadFocusable
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun AppsScreen(state: HomeViewModel.State) {
@@ -41,7 +42,7 @@ fun AppsScreen(state: HomeViewModel.State) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AppList(appList: List<AppInfo>) {
+fun AppList(appList: ImmutableList<AppInfo>) {
     val gridState = rememberTvLazyGridState()
     val relocationRequester = remember { BringIntoViewRequester() }
 

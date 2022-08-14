@@ -3,10 +3,15 @@ package com.afzaln.besttvlauncher.ui.apps
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.*
 import androidx.palette.graphics.Palette
-import androidx.tvprovider.media.tv.PreviewChannel
-import androidx.tvprovider.media.tv.PreviewProgram
-import androidx.tvprovider.media.tv.WatchNextProgram
-import com.afzaln.besttvlauncher.data.*
+import com.afzaln.besttvlauncher.data.AppInfoRepository
+import com.afzaln.besttvlauncher.data.ChannelRepository
+import com.afzaln.besttvlauncher.data.ProgramRepository
+import com.afzaln.besttvlauncher.data.UserPreferences
+import com.afzaln.besttvlauncher.data.models.AppInfo
+import com.afzaln.besttvlauncher.data.models.Channel
+import com.afzaln.besttvlauncher.data.models.Program
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -54,9 +59,9 @@ class HomeViewModel(
     sealed class State {
         object Loading : State()
         class Loaded(
-            val programsByChannel: Map<PreviewChannel, List<PreviewProgram>>,
-            val watchNextPrograms: List<WatchNextProgram>,
-            val appInfoList: List<AppInfo>
+            val programsByChannel: ImmutableMap<Channel, ImmutableList<Program>>,
+            val watchNextPrograms: ImmutableList<Program>,
+            val appInfoList: ImmutableList<AppInfo>
         ) : State()
     }
 }

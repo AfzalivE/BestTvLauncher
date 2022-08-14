@@ -1,11 +1,33 @@
-package com.afzaln.besttvlauncher.utils
+package com.afzaln.besttvlauncher.data.models
 
 import android.annotation.SuppressLint
 import androidx.tvprovider.media.tv.BasePreviewProgram
 import androidx.tvprovider.media.tv.TvContractCompat
 
+data class Program(
+    val id: Long,
+    val title: String,
+    val description: String,
+    val genre: String?,
+    val releaseDate: String?,
+    val durationMillis: Int,
+    val posterArtAspectRatio: Int,
+    val posterArtUri: String,
+)
+
+fun BasePreviewProgram.toProgram() = Program(
+    id,
+    title,
+    description,
+    genre,
+    releaseDate,
+    durationMillis,
+    posterArtAspectRatio,
+    posterArtUri.toString(),
+)
+
 @SuppressLint("RestrictedApi")
-fun BasePreviewProgram.posterAspectRatio(): Float = when (posterArtAspectRatio) {
+fun Program.posterAspectRatio(): Float = when (posterArtAspectRatio) {
     // TODO publish AndroidTvProvider fork 1.0.2
     TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_16_9 -> 16f / 9
     TvContractCompat.PreviewProgramColumns.ASPECT_RATIO_3_2 -> 3f / 2

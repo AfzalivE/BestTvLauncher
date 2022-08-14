@@ -34,10 +34,10 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintLayoutScope
-import androidx.tvprovider.media.tv.BasePreviewProgram
-import androidx.tvprovider.media.tv.PreviewProgram
+import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import com.afzaln.besttvlauncher.R
+import com.afzaln.besttvlauncher.data.models.Program
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.ui.theme.Gray20
 import com.afzaln.besttvlauncher.ui.theme.Gray700
@@ -62,7 +62,7 @@ fun ItemDetailsScreen(channelId: Long, programId: Long) {
 }
 
 @Composable
-fun ItemDetailsContent(program: PreviewProgram) {
+fun ItemDetailsContent(program: Program) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -72,7 +72,7 @@ fun ItemDetailsContent(program: PreviewProgram) {
             val (header, titleDetails) = createRefs()
 
             MediaHeaderImage(
-                program.posterArtUri,
+                program.posterArtUri.toUri(),
                 modifier = Modifier.constrainAs(header) {
                     top.linkTo(parent.top)
                 }
@@ -85,7 +85,7 @@ fun ItemDetailsContent(program: PreviewProgram) {
 @Composable
 private fun ConstraintLayoutScope.ItemInfo(
     titleDetails: ConstrainedLayoutReference,
-    program: PreviewProgram
+    program: Program
 ) {
 
     val initialState = AnimationState(opacity = 0f, scale = 0.75f)
@@ -219,20 +219,20 @@ private fun Transition<AnimationState>.animateContent(): AnimationState {
 }
 
 @Composable
-fun MetadataRow(previewProgram: BasePreviewProgram) {
+fun MetadataRow(program: Program) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.fillMaxSize()
     ) {
-        previewProgram.genre?.let {
+        program.genre?.let {
             Text(
-                text = previewProgram.genre,
+                text = program.genre,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f)
             )
         }
 
-        previewProgram.releaseDate?.let { releaseDate ->
+        program.releaseDate?.let { releaseDate ->
             Text(
                 text = releaseDate,
                 style = MaterialTheme.typography.titleMedium,
@@ -241,7 +241,7 @@ fun MetadataRow(previewProgram: BasePreviewProgram) {
         }
 
         val durations =
-            previewProgram.durationMillis.milliseconds.toComponents { hours, minutes, _, _ ->
+            program.durationMillis.milliseconds.toComponents { hours, minutes, _, _ ->
                 arrayOf(hours, minutes)
             }
 
@@ -254,7 +254,7 @@ fun MetadataRow(previewProgram: BasePreviewProgram) {
 }
 
 @Composable
-fun ButtonRow(previewProgram: BasePreviewProgram) {
+fun ButtonRow(program: Program) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 

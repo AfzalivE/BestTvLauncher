@@ -1,11 +1,11 @@
-package com.afzaln.besttvlauncher.data
+package com.afzaln.besttvlauncher.data.models
 
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 
 data class AppInfo(
-    val label: CharSequence,
+    val label: String,
     val packageName: String,
     val banner: Drawable
 )

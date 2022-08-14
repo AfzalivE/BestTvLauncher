@@ -54,6 +54,19 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
         freeCompilerArgs += ["-Xjvm-default=enable"]
+
+        if (project.findProperty("com.afzaln.besttvlauncher.enableComposeCompilerReports") == "true") {
+            freeCompilerArgs += [
+                    "-P",
+                    "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
+                            project.buildDir.absolutePath + "/compose_metrics"
+            ]
+            freeCompilerArgs += [
+                    "-P",
+                    "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
+                            project.buildDir.absolutePath + "/compose_metrics"
+            ]
+        }
     }
 
     buildFeatures {
@@ -83,6 +96,7 @@ android {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
 
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.leanback:leanback:1.0.0")

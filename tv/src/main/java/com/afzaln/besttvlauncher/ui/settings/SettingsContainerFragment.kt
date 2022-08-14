@@ -6,9 +6,9 @@ import androidx.leanback.preference.LeanbackPreferenceFragmentCompat
 import androidx.leanback.preference.LeanbackSettingsFragmentCompat
 import androidx.preference.*
 import com.afzaln.besttvlauncher.R
-import com.afzaln.besttvlauncher.data.PreviewChannelWrapper
 import com.afzaln.besttvlauncher.data.UserPreferences.Companion.KEY_CHANNELS
 import com.afzaln.besttvlauncher.data.UserPreferences.Companion.USER_PREF_FILE_NAME
+import com.afzaln.besttvlauncher.data.models.Channel
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.utils.locatorViewModel
 
@@ -85,17 +85,17 @@ class SettingsFragment : LeanbackPreferenceFragmentCompat() {
 
     private fun setupChannels(
         preference: MultiSelectListPreference,
-        channelList: List<PreviewChannelWrapper>,
+        channelList: List<Channel>,
     ) {
-        val entry = channelList.associate {
-            val displayName = it.channel.displayName.toString()
-            val entry = if (displayName != it.appName) {
-                "${it.appName} - $displayName"
+        val entry = channelList.associate { channel ->
+            val displayName = channel.displayName
+            val entry = if (displayName != channel.appName) {
+                "${channel.appName} - $displayName"
             } else {
                 displayName
             }
 
-            it.channel.id.toString() to entry
+            channel.id.toString() to entry
         }
 
         val entries = entry.values.toTypedArray()
