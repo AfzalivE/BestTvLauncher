@@ -11,7 +11,6 @@ import com.afzaln.besttvlauncher.data.UserPreferences.Companion.KEY_CHANNELS
 import com.afzaln.besttvlauncher.data.UserPreferences.Companion.USER_PREF_FILE_NAME
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.utils.locatorViewModel
-import logcat.logcat
 
 class SettingsContainerFragment : LeanbackSettingsFragmentCompat() {
     override fun onPreferenceStartFragment(

@@ -4,7 +4,8 @@ import android.content.res.Configuration
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -36,9 +37,6 @@ import com.afzaln.besttvlauncher.utils.dpadFocusable
 import com.afzaln.besttvlauncher.utils.emptyPalette
 import com.afzaln.besttvlauncher.utils.locatorViewModel
 import com.afzaln.besttvlauncher.utils.posterAspectRatio
-import com.google.accompanist.placeholder.PlaceholderHighlight
-import com.google.accompanist.placeholder.fade
-import com.google.accompanist.placeholder.placeholder
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -71,64 +69,6 @@ fun ChannelsScreen(onProgramClicked: (Long, Long) -> Unit) {
                 LoadingChannelScreen()
             }
         }
-    }
-}
-
-@Composable
-fun LoadingChannelScreen() {
-    Column(
-        modifier = Modifier
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        repeat(3) {
-            Row(
-                Modifier
-                    .padding(horizontal = 32.dp, vertical = 16.dp)
-                    .horizontalScroll(rememberScrollState())
-            ) {
-                repeat(10) {
-                    LoadingProgramCard()
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun LoadingProgramCard() {
-    Column(
-        modifier = Modifier
-            .requiredWidth(120.dp)
-            .padding(horizontal = 8.dp, vertical = 16.dp)
-    ) {
-        Card(
-            shape = AppTheme.cardShape, modifier = Modifier
-                .requiredHeight(120.dp)
-                .placeholder(
-                    visible = true,
-                    color = Color.DarkGray,
-                    shape = AppTheme.cardShape,
-                    highlight = PlaceholderHighlight.fade(highlightColor = Color.Gray)
-                )
-        ) {
-            Box(modifier = Modifier.fillMaxSize())
-        }
-
-        Text(
-            "Empty text",
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier
-                .width(160.dp)
-                .requiredHeight(48.dp)
-                .padding(top = 16.dp)
-                .placeholder(
-                    visible = true,
-                    color = Color.DarkGray,
-                    shape = AppTheme.cardShape,
-                    highlight = PlaceholderHighlight.fade(highlightColor = Color.Gray)
-                )
-        )
     }
 }
 

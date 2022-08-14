@@ -8,10 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import cafe.adriel.voyager.core.screen.Screen
 import com.afzaln.besttvlauncher.R
 import com.afzaln.besttvlauncher.ui.home.HomeScreen
-import com.afzaln.besttvlauncher.ui.home.NewHomeScreen
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 
 @Composable
@@ -21,7 +19,7 @@ fun BestTvApp() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            NewHomeScreen()
+            HomeScreen()
         }
     }
 }
@@ -33,11 +31,6 @@ interface Destination {
 interface Tab: Destination {
     @get:Composable
     val title: String
-}
-
-object Home : Screen {
-    @Composable
-    override fun Content() = HomeScreen()
 }
 
 object Channels : Tab {

@@ -1,8 +1,11 @@
-package com.afzaln.besttvlauncher.ui
+package com.afzaln.besttvlauncher.ui.itemdetails
 
 import android.net.Uri
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
@@ -33,7 +36,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintLayoutScope
 import androidx.tvprovider.media.tv.BasePreviewProgram
 import androidx.tvprovider.media.tv.PreviewProgram
-import androidx.tvprovider.media.tv.Program
 import coil.compose.AsyncImage
 import com.afzaln.besttvlauncher.R
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel

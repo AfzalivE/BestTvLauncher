@@ -1,68 +1,70 @@
 package com.afzaln.besttvlauncher.ui.home
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.tween
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
-import cafe.adriel.voyager.navigator.tab.TabNavigator
-import cafe.adriel.voyager.transitions.ScreenTransition
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.afzaln.besttvlauncher.ui.Apps
 import com.afzaln.besttvlauncher.ui.Channels
+import com.afzaln.besttvlauncher.ui.ItemDetails
+import com.afzaln.besttvlauncher.ui.apps.AppsScreen
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
+import com.afzaln.besttvlauncher.ui.channels.ChannelsScreen
+import com.afzaln.besttvlauncher.ui.itemdetails.ItemDetailsScreen
 import com.afzaln.besttvlauncher.utils.locatorViewModel
-
-@Composable
-fun HomeScreen() {
-//    val tabs = listOf(Channels, Apps)
-//    val viewModel: HomeViewModel = locatorViewModel()
-//    val materialBackgroundColor = MaterialTheme.colorScheme.background
-//    val backgroundColor by viewModel.backgroundColor.observeAsState(materialBackgroundColor)
-//
-//    TabNavigator(tab = Channels) {
-//        val tabNavigator = LocalTabNavigator.current
-//        val navigator = LocalNavigator.currentOrThrow
-//
-//        HomeScaffold(
-//            selectedTab = tabNavigator.current,
-//            tabs = tabs,
-//            containerColor = backgroundColor,
-//            onTabSelected = {
-//                tabNavigator.current = it
-//            }
-//        ) {
-//            TabTransition(navigator)
-//        }
-//    }
-}
+import com.afzaln.besttvlauncher.utils.navigateSingleTopTo
+import com.afzaln.besttvlauncher.utils.navigateToItemDetails
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun TabTransition(navigator: Navigator) {
-//    ScreenTransition(navigator = navigator, transition = {
-//        if (Channels isTransitioningTo Apps) {
-//            fadeIn(tween(duration)) +
-//                    slideInHorizontally(tween(duration), initialOffsetX = { xOffset }) with
-//                    fadeOut(tween(duration)) +
-//                    slideOutHorizontally(tween(duration), targetOffsetX = { -xOffset })
-//        } else if (Apps isTransitioningTo Channels) {
-//            fadeIn(tween(duration)) +
-//                    slideInHorizontally(tween(duration), initialOffsetX = { -xOffset }) with
-//                    fadeOut(tween(duration)) +
-//                    slideOutHorizontally(
-//                        tween(duration),
-//                        targetOffsetX = { xOffset }
-//                    )
-//        } else {
-//            fadeIn() with fadeOut()
-//        }
-//    })
-}
+fun HomeScreen() {
+    val tabs = listOf(Channels, Apps)
+    val viewModel: HomeViewModel = locatorViewModel()
+    val state by viewModel.state.observeAsState(initial = HomeViewModel.State.Loading)
 
-const val duration = 1000
-const val xOffset = 1000
+    val navController = rememberAnimatedNavController()
+    val currentBackStack by navController.currentBackStackEntryAsState()
+    val currentDestination = currentBackStack?.destination
+    val currentTab = tabs.find { it.route == currentDestination?.route } ?: Channels
+
+    LaunchedEffect(key1 = Unit, block = {
+        viewModel.loadData()
+    })
+
+    Column(Modifier.fillMaxSize()) {
+        TitleBar(
+            selectedTab = currentTab,
+            tabs = tabs,
+            onTabSelected = { navController.navigateSingleTopTo(it.route) }
+        )
+
+        AnimatedNavHost(
+            navController = navController,
+            startDestination = Channels.route,
+        ) {
+            composable(route = Channels.route) {
+                ChannelsScreen(onProgramClicked = { channelId, programId ->
+                    navController.navigateToItemDetails(channelId, programId)
+                })
+            }
+            composable(route = Apps.route) {
+                AppsScreen()
+            }
+            composable(route = ItemDetails.routeWithArgs, arguments = ItemDetails.arguments) { navBackstackEntry ->
+                navBackstackEntry.arguments?.let { arguments ->
+                    val channelId = arguments.getLong(ItemDetails.channelIdArg)
+                    val programId = arguments.getLong(ItemDetails.programIdArg)
+                    ItemDetailsScreen(channelId = channelId, programId = programId)
+                }
+            }
+        }
+    }
+}

@@ -1,10 +1,8 @@
 package com.afzaln.besttvlauncher.data
 
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.drawable.BitmapDrawable
-import androidx.tvprovider.media.tv.*
+import androidx.tvprovider.media.tv.WatchNextProgram
+import androidx.tvprovider.media.tv.WatchNextProgramHelper
 
 class ProgramRepository(context: Context) {
     private val watchNextProgramHelper = WatchNextProgramHelper(context)
