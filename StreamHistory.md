@@ -32,3 +32,8 @@
 - Add shimmer loading state to Channels screen
 - Use TvLazyColumn/Row/Grid for Lazy components for better focus
 - Move some loading off main thread
+
+# August 13th 2022
+- Refactor and remove unused code
+- Combine channel & program, watch next, and app info loading using Flows
+- Use Compose Metrics and Kotlin Immutable Collections to make Composables skippable
