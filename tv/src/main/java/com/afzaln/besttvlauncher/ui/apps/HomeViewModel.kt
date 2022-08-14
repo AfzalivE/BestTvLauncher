@@ -6,11 +6,9 @@ import androidx.palette.graphics.Palette
 import androidx.tvprovider.media.tv.PreviewChannel
 import androidx.tvprovider.media.tv.PreviewProgram
 import androidx.tvprovider.media.tv.WatchNextProgram
-import com.afzaln.besttvlauncher.data.AppInfoRepository
-import com.afzaln.besttvlauncher.data.ChannelRepository
-import com.afzaln.besttvlauncher.data.ProgramRepository
-import com.afzaln.besttvlauncher.data.UserPreferences
+import com.afzaln.besttvlauncher.data.*
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
@@ -19,11 +17,8 @@ class HomeViewModel(
     private val programRepository: ProgramRepository,
     private val userPreferences: UserPreferences
 ) : ViewModel() {
-    val appInfoList = appInfoRepo.apps.asLiveData()
     val wrappedChannelList = channelRepository.channels.asLiveData()
     val programsByChannel = channelRepository.channelProgramMap.asLiveData()
-    val state = MutableLiveData<State>(State.Loading)
-
     val palette = MutableLiveData<Palette>()
     val backgroundColor = MediatorLiveData<Color>().apply {
         addSource(palette) { palette ->
@@ -33,15 +28,23 @@ class HomeViewModel(
         }
     }
 
+    val state = combine(
+        channelRepository.channelProgramMap,
+        programRepository.watchNextPrograms,
+        appInfoRepo.apps
+    ) { channelProgramMap, watchNextPrograms, appInfoList ->
+        if (channelProgramMap.isEmpty() || appInfoList.isEmpty()) {
+            State.Loading
+        } else {
+            State.Loaded(channelProgramMap, watchNextPrograms, appInfoList)
+        }
+    }
+
     fun loadData() {
         viewModelScope.launch {
-            state.value = State.Loading
             delay(500)
             channelRepository.refreshData()
-            state.value = State.Loaded(
-                channelRepository.channelProgramMap.value,
-                programRepository.watchNextPrograms
-            )
+            programRepository.refreshData()
         }
     }
 
@@ -52,7 +55,8 @@ class HomeViewModel(
         object Loading : State()
         class Loaded(
             val programsByChannel: Map<PreviewChannel, List<PreviewProgram>>,
-            val watchNextPrograms: MutableList<WatchNextProgram>
+            val watchNextPrograms: List<WatchNextProgram>,
+            val appInfoList: List<AppInfo>
         ) : State()
     }
 }

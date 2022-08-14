@@ -11,7 +11,6 @@ import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -35,20 +34,13 @@ import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 import com.afzaln.besttvlauncher.utils.dpadFocusable
 import com.afzaln.besttvlauncher.utils.emptyPalette
-import com.afzaln.besttvlauncher.utils.locatorViewModel
 import com.afzaln.besttvlauncher.utils.posterAspectRatio
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun ChannelsScreen(onProgramClicked: (Long, Long) -> Unit) {
-    val viewModel: HomeViewModel = locatorViewModel()
-    val state by viewModel.state.observeAsState(initial = HomeViewModel.State.Loading)
+fun ChannelsScreen(state: HomeViewModel.State, onProgramClicked: (Long, Long) -> Unit) {
     val materialBackgroundColor = MaterialTheme.colorScheme.background
-    val backgroundColor by viewModel.backgroundColor.observeAsState(materialBackgroundColor)
-
-    LaunchedEffect(key1 = Unit) {
-        viewModel.loadData()
-    }
+//    val backgroundColor by viewModel.backgroundColor.observeAsState(materialBackgroundColor)
 
     AnimatedContent(targetState = state, transitionSpec = {
         fadeIn(tween(250)) with fadeOut(tween(250))
@@ -58,9 +50,9 @@ fun ChannelsScreen(onProgramClicked: (Long, Long) -> Unit) {
                 ChannelsScreenContent(
                     programList = targetState.programsByChannel,
                     watchNextList = targetState.watchNextPrograms,
-                    backgroundColor = backgroundColor,
+                    backgroundColor = materialBackgroundColor,
                     onCardFocus = { palette ->
-                        viewModel.palette.value = palette
+//                        viewModel.palette.value = palette
                     },
                     onProgramClicked = onProgramClicked
                 )

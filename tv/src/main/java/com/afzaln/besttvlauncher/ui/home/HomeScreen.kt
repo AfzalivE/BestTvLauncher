@@ -6,8 +6,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.afzaln.besttvlauncher.ui.Apps
 import com.afzaln.besttvlauncher.ui.Channels
@@ -23,12 +24,12 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalLifecycleComposeApi::class)
 @Composable
 fun HomeScreen() {
     val tabs = listOf(Channels, Apps)
     val viewModel: HomeViewModel = locatorViewModel()
-    val state by viewModel.state.observeAsState(initial = HomeViewModel.State.Loading)
+    val state by viewModel.state.collectAsStateWithLifecycle(HomeViewModel.State.Loading)
 
     val navController = rememberAnimatedNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
@@ -51,14 +52,19 @@ fun HomeScreen() {
             startDestination = Channels.route,
         ) {
             composable(route = Channels.route) {
-                ChannelsScreen(onProgramClicked = { channelId, programId ->
-                    navController.navigateToItemDetails(channelId, programId)
-                })
+                ChannelsScreen(
+                    state = state,
+                    onProgramClicked = { channelId, programId ->
+                        navController.navigateToItemDetails(channelId, programId)
+                    })
             }
             composable(route = Apps.route) {
-                AppsScreen()
+                AppsScreen(state)
             }
-            composable(route = ItemDetails.routeWithArgs, arguments = ItemDetails.arguments) { navBackstackEntry ->
+            composable(
+                route = ItemDetails.routeWithArgs,
+                arguments = ItemDetails.arguments
+            ) { navBackstackEntry ->
                 navBackstackEntry.arguments?.let { arguments ->
                     val channelId = arguments.getLong(ItemDetails.channelIdArg)
                     val programId = arguments.getLong(ItemDetails.programIdArg)

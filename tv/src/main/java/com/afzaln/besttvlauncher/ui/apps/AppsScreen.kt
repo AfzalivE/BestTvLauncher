@@ -12,8 +12,6 @@ import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.material.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,15 +28,14 @@ import com.afzaln.besttvlauncher.data.AppInfo
 import com.afzaln.besttvlauncher.data.getLaunchIntent
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 import com.afzaln.besttvlauncher.utils.dpadFocusable
-import com.afzaln.besttvlauncher.utils.locatorViewModel
 
 @Composable
-fun AppsScreen() {
-    val viewModel: HomeViewModel = locatorViewModel()
-    val appList by viewModel.appInfoList.observeAsState(emptyList())
-
-    Column {
-        AppList(appList)
+fun AppsScreen(state: HomeViewModel.State) {
+    if (state is HomeViewModel.State.Loaded) {
+        val appList = state.appInfoList
+        Column {
+            AppList(appList)
+        }
     }
 }
 
