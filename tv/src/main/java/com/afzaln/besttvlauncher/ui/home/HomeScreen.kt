@@ -1,6 +1,11 @@
 package com.afzaln.besttvlauncher.ui.home
 
+import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -11,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.afzaln.besttvlauncher.ui.Apps
 import com.afzaln.besttvlauncher.ui.Channels
@@ -55,26 +62,70 @@ fun HomeScreen() {
             navController = navController,
             startDestination = Channels.route,
         ) {
-            composable(route = Channels.route) {
+            composable(
+                route = Channels.route,
+                enterTransition = {
+                    tabEnterTransition(AnimatedContentScope.SlideDirection.End)
+                },
+                exitTransition = {
+                    tabExitTransition(AnimatedContentScope.SlideDirection.Start)
+                }
+            ) {
                 ChannelsScreen(
                     state = state,
                     onProgramClicked = { channelId, programId ->
                         navController.navigateToItemDetails(channelId, programId)
-                    })
+                    }
+                )
             }
-            composable(route = Apps.route) {
+
+            composable(route = Apps.route,
+                enterTransition = {
+                    tabEnterTransition(AnimatedContentScope.SlideDirection.Start)
+                },
+                exitTransition = {
+                    tabExitTransition(AnimatedContentScope.SlideDirection.End)
+                }
+            ) {
                 AppsScreen(state)
             }
-            composable(
-                route = ItemDetails.routeWithArgs,
-                arguments = ItemDetails.arguments
-            ) { navBackstackEntry ->
-                navBackstackEntry.arguments?.let { arguments ->
-                    val channelId = arguments.getLong(ItemDetails.channelIdArg)
-                    val programId = arguments.getLong(ItemDetails.programIdArg)
-                    ItemDetailsScreen(channelId = channelId, programId = programId)
-                }
-            }
+
+            itemDetailsComposable()
+        }
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+private fun AnimatedContentScope<NavBackStackEntry>.tabExitTransition(
+    slideDirection: AnimatedContentScope.SlideDirection,
+    duration: Int = 500
+) = fadeOut(tween(duration / 2, easing = LinearEasing)) + slideOutOfContainer(
+    slideDirection,
+    tween(duration, easing = LinearEasing),
+    targetOffset = { it / 24 }
+)
+
+@OptIn(ExperimentalAnimationApi::class)
+private fun AnimatedContentScope<NavBackStackEntry>.tabEnterTransition(
+    slideDirection: AnimatedContentScope.SlideDirection,
+    duration: Int = 500,
+    delay: Int = duration - 350
+) = fadeIn(tween(duration, duration - delay)) + slideIntoContainer(
+    slideDirection,
+    animationSpec = tween(duration, duration - delay),
+    initialOffset = { it / 24 }
+)
+
+@OptIn(ExperimentalAnimationApi::class)
+private fun NavGraphBuilder.itemDetailsComposable() {
+    composable(
+        route = ItemDetails.routeWithArgs,
+        arguments = ItemDetails.arguments
+    ) { navBackstackEntry ->
+        navBackstackEntry.arguments?.let { arguments ->
+            val channelId = arguments.getLong(ItemDetails.channelIdArg)
+            val programId = arguments.getLong(ItemDetails.programIdArg)
+            ItemDetailsScreen(channelId = channelId, programId = programId)
         }
     }
 }
