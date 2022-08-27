@@ -3,10 +3,12 @@ package com.afzaln.besttvlauncher.ui.home
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -16,6 +18,7 @@ import com.afzaln.besttvlauncher.ui.ItemDetails
 import com.afzaln.besttvlauncher.ui.apps.AppsScreen
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.ui.channels.ChannelsScreen
+import com.afzaln.besttvlauncher.ui.components.TitleBar
 import com.afzaln.besttvlauncher.ui.itemdetails.ItemDetailsScreen
 import com.afzaln.besttvlauncher.utils.locatorViewModel
 import com.afzaln.besttvlauncher.utils.navigateSingleTopTo
@@ -42,6 +45,7 @@ fun HomeScreen() {
 
     Column(Modifier.fillMaxSize()) {
         TitleBar(
+            modifier = Modifier.padding(top = 34.dp),
             selectedTab = currentTab,
             tabs = tabs,
             onTabSelected = { navController.navigateSingleTopTo(it.route) }

@@ -1,12 +1,14 @@
-package com.afzaln.besttvlauncher.ui.home
+package com.afzaln.besttvlauncher.ui.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TabRow
@@ -25,18 +27,20 @@ import com.afzaln.besttvlauncher.ui.theme.AppTheme
 
 @Composable
 fun TitleBar(
+    modifier: Modifier = Modifier,
     selectedTab: Tab,
     tabs: List<Tab>,
     onTabSelected: (Tab) -> Unit
 ) {
     val tabRowWidth = (tabs.size * 160).dp
 
-    TabRow(
-        modifier = Modifier.requiredWidth(tabRowWidth),
+    ScrollableTabRow(
+        modifier = modifier.requiredWidth(tabRowWidth),
         indicator = {},
         divider = {},
         selectedTabIndex = tabs.indexOf(selectedTab),
-        containerColor = Color.Transparent
+        backgroundColor = Color.Transparent,
+        edgePadding = 46.dp
     ) {
         tabs.forEach { tab ->
             TabItem(
@@ -84,7 +88,8 @@ fun TabItem(
             .background(
                 color = animatedBackground,
                 shape = RoundedCornerShape(32.dp)
-            ),
+            )
+            .requiredHeight(40.dp),
         onClick = onTabSelected,
         text = {
             Text(
@@ -103,6 +108,9 @@ fun TabItem(
 @Composable
 fun DefaultPreview() {
     AppTheme {
-        TitleBar(Channels, listOf(Channels, Apps)) {}
+        TitleBar(
+            selectedTab = Channels,
+            tabs = listOf(Channels, Apps)
+        ) {}
     }
 }
