@@ -37,3 +37,8 @@
 - Refactor and remove unused code
 - Combine channel & program, watch next, and app info loading using Flows
 - Use Compose Metrics and Kotlin Immutable Collections to make Composables skippable
+
+# August 27th 2022
+- Adjusted TitleBar padding
+- Adjusted card size and text width
+- Added slide and fade transitions to tabs
