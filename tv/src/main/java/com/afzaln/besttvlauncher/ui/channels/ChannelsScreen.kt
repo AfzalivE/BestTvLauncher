@@ -19,6 +19,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -211,17 +212,21 @@ private fun ProgramCard(
         }
     )
 
+    val height = 160
+    val width = height * program.posterAspectRatio()
+
     Column(
         modifier = Modifier
-            .scale(animatedScale)
+            .widthIn(max = width.dp)
             .padding(horizontal = 8.dp, vertical = 16.dp)
+            .scale(animatedScale)
             .recomposeHighlighter(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Card(
             shape = AppTheme.cardShape,
             modifier = Modifier
-                .requiredHeight(120.dp)
+                .heightIn(max = height.dp)
                 .aspectRatio(program.posterAspectRatio())
                 .dpadFocusable(
                     shadowColor = Color(palette.vibrantSwatch?.rgb ?: 0),
@@ -254,7 +259,12 @@ private fun ProgramCard(
             text = program.title ?: "empty",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.widthIn(max = 160.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .padding(top = 8.dp),
+            maxLines = 2,
+            overflow = TextOverflow.Visible
         )
     }
 }
