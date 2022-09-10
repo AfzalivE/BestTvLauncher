@@ -2,12 +2,11 @@ package com.afzaln.besttvlauncher.data.models
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
 
 data class AppInfo(
     val label: String,
     val packageName: String,
-    val banner: Drawable
+    val activityName: String,
 )
 
 fun AppInfo.getLaunchIntent(context: Context): Intent? {

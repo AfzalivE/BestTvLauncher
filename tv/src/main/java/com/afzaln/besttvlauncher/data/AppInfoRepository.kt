@@ -40,7 +40,7 @@ class AppInfoRepository(private val context: Context) {
                 AppInfo(
                     app.loadLabel(packageManager).toString(),
                     app.activityInfo.packageName,
-                    app.activityInfo.loadBanner(packageManager)
+                    app.activityInfo.name,
                 )
             }.toImmutableList()
     }

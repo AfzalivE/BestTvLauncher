@@ -46,9 +46,9 @@ fun HomeScreen() {
     val currentDestination = currentBackStack?.destination
     val currentTab = tabs.find { it.route == currentDestination?.route } ?: Channels
 
-    LaunchedEffect(key1 = Unit, block = {
+    LaunchedEffect(key1 = Unit) {
         viewModel.loadData()
-    })
+    }
 
     Column(Modifier.fillMaxSize()) {
         TitleBar(

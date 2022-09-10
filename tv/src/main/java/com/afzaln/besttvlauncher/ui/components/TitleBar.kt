@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -64,6 +65,12 @@ fun TabItem(
     val isItemFocused by interactionSource.collectIsFocusedAsState()
     val isFocusedOrSelected = isItemFocused || selected
 
+    LaunchedEffect(isItemFocused) {
+        if (isItemFocused) {
+            onTabSelected()
+        }
+    }
+
     val animatedBackground by animateColorAsState(
         animationSpec = tween(500),
         targetValue = if (isFocusedOrSelected) {
@@ -98,10 +105,6 @@ fun TabItem(
             )
         }
     )
-
-    if (isItemFocused) {
-        onTabSelected()
-    }
 }
 
 @Preview(showBackground = true)

@@ -137,7 +137,7 @@ fun ProgramInChannelRow(
     val context = LocalContext.current
 
     CardRow(
-        title = channel.displayName.toString(),
+        title = channel.displayName,
         programs = programs,
         onClick = { programId ->
             onProgramClicked(channel.id, programId)

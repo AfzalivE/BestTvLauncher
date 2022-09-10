@@ -1,31 +1,26 @@
 package com.afzaln.besttvlauncher.ui.apps
 
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.relocation.BringIntoViewRequester
-import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.material.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.drawable.toBitmap
 import androidx.tv.foundation.lazy.grid.*
-import com.afzaln.besttvlauncher.R
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.afzaln.besttvlauncher.data.models.AppInfo
 import com.afzaln.besttvlauncher.data.models.getLaunchIntent
+import com.afzaln.besttvlauncher.image.toPackageUri
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
 import com.afzaln.besttvlauncher.utils.dpadFocusable
 import kotlinx.collections.immutable.ImmutableList
@@ -40,11 +35,9 @@ fun AppsScreen(state: HomeViewModel.State) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AppList(appList: ImmutableList<AppInfo>) {
     val gridState = rememberTvLazyGridState()
-    val relocationRequester = remember { BringIntoViewRequester() }
 
     TvLazyVerticalGrid(
         modifier = Modifier.background(MaterialTheme.colorScheme.background),
@@ -60,7 +53,6 @@ fun AppList(appList: ImmutableList<AppInfo>) {
             span = { TvGridItemSpan(1) }) { appInfo ->
             AppCard(
                 appInfo,
-                modifier = Modifier.bringIntoViewRequester(relocationRequester),
                 onFocus = {}
             )
         }
@@ -98,10 +90,10 @@ fun AppCard(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Card(shape = AppTheme.cardShape) {
-            Image(
-                bitmap = appInfo.banner.toBitmap().asImageBitmap(),
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier.fillMaxSize(),
+            AsyncImage(
+                model = ImageRequest.Builder(context)
+                    .data(appInfo.toPackageUri())
+                    .build(),
                 contentDescription = "Icon for ${appInfo.label}"
             )
         }
@@ -113,21 +105,22 @@ fun AppCard(
 fun DefaultAppCard() {
     AppTheme {
         val resources = LocalContext.current.resources
-        AppCard(
-            AppInfo(
-                label = "App name",
-                packageName = "com.afzaln.example",
-                banner = BitmapDrawable(
-                    resources,
-                    BitmapFactory.decodeResource(
-                        resources,
-                        R.drawable.app_icon_your_company
-                    )
-                )
-            ),
-            onFocus = {
-
-            }
-        )
+        // TODO provide a slot API for the image
+//        AppCard(
+//            AppInfo(
+//                label = "App name",
+//                packageName = "com.afzaln.example",
+//                activityName = BitmapDrawable(
+//                    resources,
+//                    BitmapFactory.decodeResource(
+//                        resources,
+//                        R.drawable.app_icon_your_company
+//                    )
+//                )
+//            ),
+//            onFocus = {
+//
+//            }
+//        )
     }
 }

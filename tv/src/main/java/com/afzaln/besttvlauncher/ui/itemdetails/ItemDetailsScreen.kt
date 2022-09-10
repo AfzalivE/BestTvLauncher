@@ -118,7 +118,7 @@ private fun ConstraintLayoutScope.ItemInfo(
             .alpha(animationState.opacity)
     ) {
         Text(
-            text = program.title,
+            text = program.title ?: "Empty title",
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
