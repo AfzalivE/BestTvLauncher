@@ -46,3 +46,7 @@
 # September 10th 2022
 - Fixed stutter when switching to Apps screen
 - Use a custom Coil fetcher to get app banners, making AppInfo skippable 🎉 
+
+# September 25th 2022
+- Tried out ImmersiveList, didn't work quite seamlessly
+- Animated background color on focus using Palette
