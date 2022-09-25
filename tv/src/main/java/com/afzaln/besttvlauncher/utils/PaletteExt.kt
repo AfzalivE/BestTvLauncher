@@ -13,7 +13,8 @@ suspend fun createPalette(drawable: Drawable): Palette {
     val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         drawable.toBitmap().asShared()
     } else {
-        TODO("VERSION.SDK_INT < S")
+        drawable.toBitmap()
+//        TODO("VERSION.SDK_INT < S")
     }
     return withContext(Dispatchers.Default) {
         Palette.from(bitmap).generate()

@@ -1,17 +1,33 @@
 package com.afzaln.besttvlauncher.ui.channels
 
 import android.content.res.Configuration
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.with
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -35,6 +51,7 @@ import com.afzaln.besttvlauncher.data.models.Program
 import com.afzaln.besttvlauncher.data.models.posterAspectRatio
 import com.afzaln.besttvlauncher.ui.apps.HomeViewModel
 import com.afzaln.besttvlauncher.ui.theme.AppTheme
+import com.afzaln.besttvlauncher.utils.createPalette
 import com.afzaln.besttvlauncher.utils.dpadFocusable
 import com.afzaln.besttvlauncher.utils.emptyPalette
 import com.afzaln.besttvlauncher.utils.recomposeHighlighter
@@ -42,10 +59,15 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun ChannelsScreen(state: HomeViewModel.State, onProgramClicked: (Long, Long) -> Unit) {
+fun ChannelsScreen(
+    state: HomeViewModel.State,
+    onProgramClicked: (Long, Long) -> Unit,
+    onCardFocus: (Palette) -> Unit
+) {
     val materialBackgroundColor = MaterialTheme.colorScheme.background
 //    val backgroundColor by viewModel.backgroundColor.observeAsState(materialBackgroundColor)
 
@@ -57,13 +79,11 @@ fun ChannelsScreen(state: HomeViewModel.State, onProgramClicked: (Long, Long) ->
                 ChannelsScreenContent(
                     programList = targetState.programsByChannel,
                     watchNextList = targetState.watchNextPrograms,
-                    backgroundColor = materialBackgroundColor,
-                    onCardFocus = { palette ->
-//                        viewModel.palette.value = palette
-                    },
+                    onCardFocus = onCardFocus,
                     onProgramClicked = onProgramClicked
                 )
             }
+
             HomeViewModel.State.Loading -> {
                 LoadingChannelScreen()
             }
@@ -75,13 +95,10 @@ fun ChannelsScreen(state: HomeViewModel.State, onProgramClicked: (Long, Long) ->
 private fun ChannelsScreenContent(
     programList: ImmutableMap<Channel, ImmutableList<Program>>,
     watchNextList: ImmutableList<Program>,
-    backgroundColor: Color = MaterialTheme.colorScheme.background,
     onCardFocus: (Palette) -> Unit,
     onProgramClicked: (Long, Long) -> Unit
 ) {
-    Column(
-        modifier = Modifier.background(backgroundColor)
-    ) {
+    Column {
         ChannelList(programList, watchNextList, onCardFocus, onProgramClicked)
     }
 }
@@ -248,9 +265,9 @@ private fun ProgramCard(
                 modifier = Modifier.fillMaxSize(),
                 onState = { state ->
                     if (state is AsyncImagePainter.State.Success) {
-//                        coroutineScope.launch {
-//                            palette = createPalette(state.result.drawable)
-//                        }
+                        coroutineScope.launch {
+                            palette = createPalette(state.result.drawable)
+                        }
                     }
                 }
             )
