@@ -1,4 +1,4 @@
-# Best TV Launcher
+# Best TV Launcher (WIP name)
 
 An Android/Google TV launcher that shows you content from your existing apps.
 
