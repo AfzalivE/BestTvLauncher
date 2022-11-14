@@ -16,6 +16,8 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
@@ -36,6 +38,13 @@ android {
             storePassword keyProps['storePass']
             keyPassword keyProps['pass']
         }
+
+        debug {
+            storeFile file("../debug.keystore")
+            keyAlias "besttvlauncher"
+            storePassword "tvlauncher"
+            keyPassword "tvlauncher"
+        }
     }
 
     buildTypes {
@@ -43,6 +52,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+        }
+
+        benchmark {
+            initWith buildTypes.release
+            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'benchmark-rules.pro'
         }
     }
 
@@ -93,6 +108,7 @@ android {
             }
         }
     }
+    namespace 'com.afzaln.besttvlauncher'
 }
 
 dependencies {
@@ -135,7 +151,11 @@ dependencies {
     // Debug
     implementation("com.squareup.logcat:logcat:0.1")
 
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 

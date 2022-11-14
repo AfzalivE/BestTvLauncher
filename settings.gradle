@@ -28,3 +28,4 @@ dependencyResolutionManagement {
 rootProject.name = "Best Tv Launcher"
 include ':mobile'
 include ':tv'
+include ':macrobenchmark'
