@@ -50,3 +50,7 @@
 # September 25th 2022
 - Tried out ImmersiveList, didn't work quite seamlessly
 - Animated background color on focus using Palette
+
+# November 13th 2022
+- Created a basic macro-benchmark "test" 
+- Tried out Baseline profiles but it seems impossible to generate one from a TV emulator
