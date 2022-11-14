@@ -123,14 +123,16 @@ private fun ConstraintLayoutScope.ItemInfo(
             color = MaterialTheme.colorScheme.onSurface
         )
         MetadataRow(program)
-        Text(
-            text = program.description,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
-            modifier = Modifier.fillMaxWidth(0.75f)
-        )
-        ButtonRow(program)
+        program.description?.let { description ->
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
+                modifier = Modifier.fillMaxWidth(0.75f)
+            )
+        }
     }
+    ButtonRow(program)
 }
 
 data class AnimationState(

@@ -7,7 +7,7 @@ import androidx.tvprovider.media.tv.TvContractCompat
 data class Program(
     val id: Long,
     val title: String?,
-    val description: String,
+    val description: String?,
     val genre: String?,
     val releaseDate: String?,
     val durationMillis: Int,
