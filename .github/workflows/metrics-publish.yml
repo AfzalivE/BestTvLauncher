@@ -50,6 +50,11 @@ jobs:
         READ_PACKAGES_USER: ${{ secrets.READ_PACKAGES_USER }}
         READ_PACKAGES_TOKEN: ${{ secrets.READ_PACKAGES_TOKEN }}
 
+    - name: Create name for directory
+      id: target_dir_name
+      run: |
+          echo "TARGET_DIR_NAME=$(date +'%d-%m-%Y-%H-%M-%S')" >> $GITHUB_STATE
+
     - name: Commit output to metrics repo
       uses: cpina/github-action-push-to-another-repository@07c4d7b3def0a8ebe788a8f2c843a4e1de4f6900 # 1.7.2
       env:
@@ -60,4 +65,4 @@ jobs:
           destination-repository-name: 'Android-Metrics-Web'
           user-email: AfzalivE@users.noreply.github.com
           target-branch: main
-          target-directory: "$(date +'%d-%m-%Y-%H-%M-%S')"
+          target-directory: ${{ steps.target_dir_name.outputs.TARGET_DIR_NAME }}
