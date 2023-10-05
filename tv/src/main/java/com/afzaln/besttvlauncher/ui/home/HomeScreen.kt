@@ -1,6 +1,6 @@
 package com.afzaln.besttvlauncher.ui.home
 
-import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
@@ -28,11 +28,13 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import androidx.palette.graphics.Palette
 import com.afzaln.besttvlauncher.ui.Apps
 import com.afzaln.besttvlauncher.ui.Channels
@@ -46,18 +48,15 @@ import com.afzaln.besttvlauncher.utils.emptyPalette
 import com.afzaln.besttvlauncher.utils.locatorViewModel
 import com.afzaln.besttvlauncher.utils.navigateSingleTopTo
 import com.afzaln.besttvlauncher.utils.navigateToItemDetails
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalLifecycleComposeApi::class)
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HomeScreen() {
     val tabs = listOf(Channels, Apps)
     val viewModel: HomeViewModel = locatorViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle(HomeViewModel.State.Loading)
 
-    val navController = rememberAnimatedNavController()
+    val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStack?.destination
     val currentTab = tabs.find { it.route == currentDestination?.route } ?: Channels
@@ -89,17 +88,17 @@ fun HomeScreen() {
             onTabSelected = { navController.navigateSingleTopTo(it.route) }
         )
 
-        AnimatedNavHost(
+        NavHost(
             navController = navController,
             startDestination = Channels.route,
         ) {
             composable(
                 route = Channels.route,
                 enterTransition = {
-                    tabEnterTransition(AnimatedContentScope.SlideDirection.End)
+                    tabEnterTransition(AnimatedContentTransitionScope.SlideDirection.End)
                 },
                 exitTransition = {
-                    tabExitTransition(AnimatedContentScope.SlideDirection.Start)
+                    tabExitTransition(AnimatedContentTransitionScope.SlideDirection.Start)
                 }
             ) {
                 ChannelsScreen(
@@ -114,10 +113,10 @@ fun HomeScreen() {
 
             composable(route = Apps.route,
                 enterTransition = {
-                    tabEnterTransition(AnimatedContentScope.SlideDirection.Start)
+                    tabEnterTransition(AnimatedContentTransitionScope.SlideDirection.Start)
                 },
                 exitTransition = {
-                    tabExitTransition(AnimatedContentScope.SlideDirection.End)
+                    tabExitTransition(AnimatedContentTransitionScope.SlideDirection.End)
                 }
             ) {
                 AppsScreen(state)
@@ -147,9 +146,8 @@ private fun Modifier.animatedBackground(
     then(background(animatedBackgroundColor))
 }
 
-@OptIn(ExperimentalAnimationApi::class)
-private fun AnimatedContentScope<NavBackStackEntry>.tabExitTransition(
-    slideDirection: AnimatedContentScope.SlideDirection,
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.tabExitTransition(
+    slideDirection: AnimatedContentTransitionScope.SlideDirection,
     duration: Int = 500
 ) = fadeOut(tween(duration / 2, easing = LinearEasing)) + slideOutOfContainer(
     slideDirection,
@@ -157,9 +155,8 @@ private fun AnimatedContentScope<NavBackStackEntry>.tabExitTransition(
     targetOffset = { it / 24 }
 )
 
-@OptIn(ExperimentalAnimationApi::class)
-private fun AnimatedContentScope<NavBackStackEntry>.tabEnterTransition(
-    slideDirection: AnimatedContentScope.SlideDirection,
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.tabEnterTransition(
+    slideDirection: AnimatedContentTransitionScope.SlideDirection,
     duration: Int = 500,
     delay: Int = duration - 350
 ) = fadeIn(tween(duration, duration - delay)) + slideIntoContainer(

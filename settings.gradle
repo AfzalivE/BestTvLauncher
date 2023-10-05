@@ -28,7 +28,6 @@ dependencyResolutionManagement {
                 password = githubProperties.get("gh_token") as String
             }
         }
-        maven { url 'https://androidx.dev/snapshots/builds/9103416/artifacts/repository' }
     }
 }
 rootProject.name = "Best Tv Launcher"
