@@ -29,7 +29,7 @@ android {
                 keyProps.load(new FileInputStream(keyProperties))
             } else {
                 // when building CI server, use signing properties from environment variables
-                def releaseProperties = System.getenv('RELEASE_SIGNING_PROPERTIES')
+                def releaseProperties = new ByteArrayInputStream((System.getenv('RELEASE_SIGNING_PROPERTIES') as String).bytes)
                 keyProps.load(releaseProperties)
             }
 
