@@ -60,3 +60,4 @@ jobs:
           destination-repository-name: 'Android-Metrics-Web'
           user-email: AfzalivE@users.noreply.github.com
           target-branch: main
+          target-directory: $(date +"%d-%m-%Y-%H-%M-%S")
