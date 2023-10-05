@@ -45,6 +45,10 @@ jobs:
 
     - name: Generate Compose metrics
       run: ./gradlew :tv:assembleRelease -Pcom.afzaln.besttvlauncher.enableComposeCompilerReports=true --rerun-tasks
+      env:
+        RELEASE_SIGNING_PROPERTIES: ${{ secrets.RELEASE_SIGNING_PROPERTIES }}
+        READ_PACKAGES_USER: ${{ secrets.READ_PACKAGES_USER }}
+        READ_PACKAGES_TOKEN: ${{ secrets.READ_PACKAGES_TOKEN }}
 
     - name: Commit output to metrics repo
       uses: cpina/github-action-push-to-another-repository@07c4d7b3def0a8ebe788a8f2c843a4e1de4f6900 # 1.7.2
