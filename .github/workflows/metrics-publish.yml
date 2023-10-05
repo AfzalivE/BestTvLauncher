@@ -34,6 +34,9 @@ jobs:
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         arguments: build
+      env:
+        READ_PACKAGES_USER: ${{ secrets.READ_PACKAGES_USER }}
+        READ_PACKAGES_TOKEN: ${{ secrets.READ_PACKAGES_TOKEN }}
 
     - name: Generate Compose metrics
       run: ./gradlew :tv:assembleRelease -Pcom.afzaln.besttvlauncher.enableComposeCompilerReports=true --rerun-tasks
