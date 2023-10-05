@@ -55,7 +55,7 @@ jobs:
       env:
           SSH_DEPLOY_KEY: ${{ secrets.ANDROID_METRICS_SSH_DEPLOY_KEY }}
       with:
-          source-directory: 'output'
+          source-directory: 'tv/build/compose_metrics'
           destination-github-username: 'AfzalivE'
           destination-repository-name: 'Android-Metrics-Web'
           user-email: AfzalivE@users.noreply.github.com
