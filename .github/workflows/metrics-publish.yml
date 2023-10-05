@@ -1,0 +1,50 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-gradle
+
+name: Compose metrics
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+        settings-path: ${{ github.workspace }} # location for the settings.xml file
+
+    - name: Build with Gradle
+      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
+      with:
+        arguments: build
+
+    - name: Generate Compose metrics
+      run: ./gradlew :tv:assembleRelease -Pcom.afzaln.besttvlauncher.enableComposeCompilerReports=true --rerun-tasks
+
+    - name: Commit output to metrics repo
+      uses: cpina/github-action-push-to-another-repository@07c4d7b3def0a8ebe788a8f2c843a4e1de4f6900 # 1.7.2
+      env:
+          SSH_DEPLOY_KEY: ${{ secrets.ANDROID_METRICS_SSH_DEPLOY_KEY }}
+      with:
+          source-directory: 'output'
+          destination-github-username: 'AfzalivE'
+          destination-repository-name: 'Android-Metrics-Web'
+          user-email: AfzalivE@users.noreply.github.com
+          target-branch: main
