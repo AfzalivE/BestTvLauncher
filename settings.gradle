@@ -7,8 +7,14 @@ pluginManagement {
 }
 dependencyResolutionManagement {
     def githubProperties = new Properties()
-    file("github.properties").withInputStream {
-        stream -> githubProperties.load(stream)
+    def propertiesFile = file("github.properties")
+    if (propertiesFile.exists()) {
+        propertiesFile.withInputStream {
+            stream -> githubProperties.load(stream)
+        }
+    } else {
+        githubProperties.put("gh_user", System.getenv("READ_PACKAGES_USER"))
+        githubProperties.put("gh_token", System.getenv("READ_PACKAGES_TOKEN"))
     }
 
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
