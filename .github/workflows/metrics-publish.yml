@@ -53,7 +53,7 @@ jobs:
     - name: Create name for directory
       id: target_dir_name
       run: |
-          echo "TARGET_DIR_NAME=$(date +'%d-%m-%Y-%H-%M-%S')" >> "$GITHUB_OUTPUT"
+          echo "TARGET_DIR_NAME=public/$(date +'%d-%m-%Y-%H-%M-%S')" >> "$GITHUB_OUTPUT"
 
     - name: Commit output to metrics repo
       uses: cpina/github-action-push-to-another-repository@07c4d7b3def0a8ebe788a8f2c843a4e1de4f6900 # 1.7.2
