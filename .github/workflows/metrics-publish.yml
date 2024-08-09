@@ -35,7 +35,7 @@ jobs:
        echo '${{ secrets.RELEASE_KEYSTORE }}' | base64 -di > besttvlauncher.keystore
 
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
+      uses: gradle/gradle-build-action@a8f75513eafdebd8141bd1cd4e30fcd194af8dfa # v2.12.0
       with:
         arguments: build
       env:
