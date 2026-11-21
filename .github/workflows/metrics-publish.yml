@@ -35,7 +35,7 @@ jobs:
        echo '${{ secrets.RELEASE_KEYSTORE }}' | base64 -di > besttvlauncher.keystore
 
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
+      uses: gradle/gradle-build-action@a8f75513eafdebd8141bd1cd4e30fcd194af8dfa # v2.12.0
       with:
         arguments: build
       env:
@@ -56,7 +56,7 @@ jobs:
           echo "TARGET_DIR_NAME=public/$(date +'%d-%m-%Y-%H-%M-%S')" >> "$GITHUB_OUTPUT"
 
     - name: Commit output to metrics repo
-      uses: cpina/github-action-push-to-another-repository@07c4d7b3def0a8ebe788a8f2c843a4e1de4f6900 # 1.7.2
+      uses: cpina/github-action-push-to-another-repository@55306faa4ed53b815ae49e564af8cfb359d32ae2 # v1.7.3
       env:
           SSH_DEPLOY_KEY: ${{ secrets.ANDROID_METRICS_SSH_DEPLOY_KEY }}
       with:
